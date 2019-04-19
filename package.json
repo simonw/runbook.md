@@ -1,0 +1,43 @@
+{
+  "name": "runbook.md",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Financial-Times/runbook.md.git"
+  },
+  "keywords": [],
+  "author": "chee <chee@snoot.club>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Financial-Times/runbook.md/issues"
+  },
+  "homepage": "https://github.com/Financial-Times/runbook.md#readme",
+  "dependencies": {
+    "marked": "^0.6.2",
+    "mdast-util-compact": "^1.0.2",
+    "mdast-util-heading-range": "^2.1.2",
+    "remark": "^10.0.1",
+    "remark-behead": "^2.2.1",
+    "remark-lint": "^6.0.4",
+    "remark-lint-no-duplicate-headings-in-section": "^1.0.2",
+    "remark-lint-no-multiple-toplevel-headings": "^1.0.2",
+    "remark-parse": "^6.0.3",
+    "remark-stringify": "^6.0.4",
+    "unified": "^7.1.0",
+    "unified-stream": "^1.0.4",
+    "unist-builder": "^1.0.3",
+    "unist-util-select": "^2.0.0",
+    "unist-util-visit-parents": "^2.0.1"
+  },
+  "devDependencies": {
+    "jest": "^24.7.1"
+  }
+}

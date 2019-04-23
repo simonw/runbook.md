@@ -38,6 +38,7 @@
     "unist-util-visit-parents": "^2.0.1"
   },
   "devDependencies": {
+    "@financial-times/rel-engage": "^7.1.0",
     "jest": "^24.7.1"
   }
 }

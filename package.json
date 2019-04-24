@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/Financial-Times/runbook.md#readme",
   "dependencies": {
+    "@financial-times/biz-ops-schema": "^3.11.1",
     "marked": "^0.6.2",
     "mdast-util-compact": "^1.0.2",
     "mdast-util-heading-range": "^2.1.2",

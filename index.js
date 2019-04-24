@@ -1,3 +1,4 @@
+const os = require('os');
 const createStream = require('unified-stream');
 const lint = require('remark-lint');
 const noDuplicateHeadings = require('remark-lint-no-duplicate-headings-in-section');
@@ -13,14 +14,22 @@ const remarkParse = require('remark-parse');
 
 const reduceSubdocumentHeadings = remarkBehead({ depth: -2 });
 
-function grabBizopsName() {
+process.env.SCHEMA_BASE_URL = '';
+
+const bizOpsSchema = require('@financial-times/biz-ops-schema');
+
+bizOpsSchema.configure({
+	baseUrl: process.env.SCHEMA_BASE_URL,
+	updateMode: 'stale',
+});
+
+function createBizopsNameNode() {
 	function isNameHeading(node) {
 		return node.type === 'heading' && node.depth === 1;
 	}
 
 	function mutate(node) {
-		node.type = 'bizops';
-		node.field = 'name';
+		node.type = 'name';
 		node.value = node.children && node.children[0].value;
 		return node;
 	}
@@ -30,16 +39,13 @@ function grabBizopsName() {
 	};
 }
 
-function grabBizopsDescription() {
+function createBizopsDescriptionNode() {
 	function isTopLevelDescription(node) {
 		return node.type === 'paragraph' && node.depth === 1;
 	}
 
 	function mutate(node) {
-		node.type = 'bizops';
-		node.field = 'name';
-		node.value = node.children;
-		node.value = node.children[0].value;
+		node.type = 'description';
 		return node;
 	}
 
@@ -49,29 +55,14 @@ function grabBizopsDescription() {
 	};
 }
 
-function normalizeBizopsFields() {
-	function isFieldHeading(node) {
-		return node.type === 'heading' && node.depth === 2;
-	}
-
-	function mutate(heading) {
-		visit(heading, 'text', textChild => {
-			textChild.value = textChild.value.toLowerCase().replace(/\s+/g, '');
-			return textChild;
-		});
-	}
-
-	return function transform(tree) {
-		visit(tree, isFieldHeading, mutate);
-	};
-}
-
 function nestContent() {
 	function mutate(start, nodes, end) {
 		return [
 			{
-				type: 'bizops',
-				field: start.children[0].value,
+				type: 'property',
+				// TODO: replace this with a function that creates a text value
+				//       from the children
+				value: start.children[0].value,
 				children: nodes,
 			},
 			end,
@@ -89,137 +80,55 @@ function nestContent() {
 	};
 }
 
-function bizops() {
-	const types = new Map([
-		[
-			'subdocument',
-			{
-				set: new Set([
-					'architecturediagram',
-					'description',
-					'failoverdetails',
-					'releasedetails',
-					'troubleshooting',
-					'moreinformation',
-					'keymanagementdetails',
-					'datarecoverydetails',
-					'monitoring',
-				]),
-				coercer(node) {
-					reduceSubdocumentHeadings(node);
-					const subdocument = build('root', {
-						children: node.children,
-					});
-					return unified()
-						.use(remarkStringify, {
-							bullet: '*',
-							fences: true,
-						})
-						.stringify(subdocument)
-						.trim();
-				},
-			},
-		],
-		[
-			'string',
-			{
-				set: new Set([
-					'name',
-					'code',
-					'servicetier',
-					'lifecyclestage',
-					'deliveredby',
-					'supportedby',
-				]),
-				coercer(node) {
-					return unified()
-						.use(remarkStringify, {
-							bullet: '*',
-							fences: true,
-						})
-						.stringify(node.children[0])
-						.trim();
-				},
-			},
-		],
-		[
-			'boolean',
-			{
-				set: new Set(['containspersonaldata', 'containssensitivedata']),
-				coercer(node) {
-					return Boolean(node.children[0].value);
-				},
-			},
-		],
-		[
-			'list',
-			{
-				set: new Set(['knownaboutby', 'replaces']),
-				coercer(node) {
-					const result = [];
-					visit(node, 'listItem', listItem =>
-						result.push(types.get('string').coercer(listItem)),
-					);
-					return result;
-				},
-			},
-		],
-		[
-			'architecturetype',
-			{
-				set: new Set(['failoverarchitecturetype']),
-				coercer(node) {
-					return types.get('subdocument').coercer(node);
-				},
-			},
-		],
-		[
-			'processtype',
-			{
-				set: new Set([
-					'failoverprocesstype',
-					'releaseprocesstype',
-					'failbackprocesstype',
-					'datarecoveryprocesstype',
-					'keymanagementprocesstype',
-					'rollbackprocesstype',
-				]),
-				coercer(node) {
-					return types.get('subdocument').coercer(node);
-				},
-			},
-		],
-	]);
+// TODO: do not mutate the subdoc
+function stringifySubdocument(node) {
+	reduceSubdocumentHeadings(node);
 
-	function coerce(node) {
-		for (const { set, coercer } of types.values()) {
-			if (set.has(node.field)) {
-				return coercer(node);
-			}
-		}
-	}
+	const subdocument = build('root', {
+		children: node.children,
+	});
 
+	return unified()
+		.use(remarkStringify, {
+			bullet: '*',
+			fences: true,
+		})
+		.stringify(subdocument)
+		.trim();
+}
+
+function jsonifyBizops() {
 	this.Compiler = function compiler(root) {
-		let result = '{';
+		const result = {};
 
-		visit(root, 'bizops', node => {
-			const coercion = JSON.stringify(coerce(node));
-			result += `"${node.field}": ${coercion == null ? null : coercion},`;
+		visit(root, 'name', node => {
+			result.name = node.value;
 		});
 
-		return `${result.slice(0, result.length - 1)}}\n`;
+		visit(root, 'description', node => {
+			result.description = stringifySubdocument(node.children[0]);
+		});
+
+		visit(root, 'property', node => {
+			result[node.value] = stringifySubdocument(node.children[0]);
+		});
+
+		return JSON.stringify(result, null, '\t') + os.EOL;
 	};
 }
 
-const processor = unified()
-	.use(remarkParse)
-	.use(lint)
-	.use(noDuplicateHeadings)
-	.use(noMultipleTitles)
-	.use(grabBizopsName)
-	.use(grabBizopsDescription)
-	.use(normalizeBizopsFields)
-	.use(nestContent)
-	.use(bizops);
+(async function() {
+	await bizOpsSchema.refresh();
 
-process.stdin.pipe(createStream(processor)).pipe(process.stdout);
+	const processor = unified()
+		.use(remarkParse)
+		.use(lint)
+		.use(noDuplicateHeadings)
+		.use(noMultipleTitles)
+		.use(createBizopsNameNode)
+		.use(createBizopsDescriptionNode)
+		.use(jsonifyBizops)
+		.use(nestContent);
+
+	process.stdin.pipe(createStream(processor)).pipe(process.stdout);
+})();

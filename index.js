@@ -21,8 +21,7 @@ function grabBizopsName() {
 	function mutate(node) {
 		node.type = 'bizops';
 		node.field = 'name';
-		node.value = node.children;
-		node.value = node.children[0].value;
+		node.value = node.children && node.children[0].value;
 		return node;
 	}
 
@@ -55,10 +54,10 @@ function normalizeBizopsFields() {
 		return node.type === 'heading' && node.depth === 2;
 	}
 
-	function mutate(node) {
-		visit(node, 'text', () => {
-			node.value = node.value.toLowerCase().replace(/\s+/g, '');
-			return node;
+	function mutate(heading) {
+		visit(heading, 'text', textChild => {
+			textChild.value = textChild.value.toLowerCase().replace(/\s+/g, '');
+			return textChild;
 		});
 	}
 

@@ -123,12 +123,14 @@ Yields, for description:
 ```idl
 interface Property <: Subdocument {
   type: "property",
+  propertyType: [biz-ops property type],
   children: [mdast Root]
 }
 ```
 
 **Property** ([**Subdocument**](#subdocument)) represents a
-property in a biz-ops runbook.
+property in a biz-ops runbook. The biz-ops property types are defined in
+[biz-ops-schema](https://github.com/Financial-Times/biz-ops-schema/blob/01ae5ad/lib/primitive-types-map.js)
 
 For example, the following markdown:
 

@@ -12,7 +12,7 @@ const unified = require('unified');
 const remarkStringify = require('remark-stringify');
 const remarkParse = require('remark-parse');
 
-const reduceSubdocumentHeadings = remarkBehead({ depth: -2 });
+const reduceSubdocumentHeadings = remarkBehead({ depth: -1 });
 
 process.env.SCHEMA_BASE_URL = '';
 

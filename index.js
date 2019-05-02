@@ -159,7 +159,7 @@ function jsonifyBizops() {
 	};
 }
 
-function coercePropertyName({ heading, systemProperties }) {
+function resolvePropertyName({ heading, systemProperties }) {
 	const normalizedHeading = normalizePropertyKey(heading);
 	const propertyEntries = Object.entries(systemProperties);
 	return propertyEntries.find(([key, property]) => {
@@ -172,9 +172,9 @@ function coercePropertyName({ heading, systemProperties }) {
 	});
 }
 
-function coerceBizopsPropertyNames({ systemProperties }) {
+function resolveBizopsPropertyNames({ systemProperties }) {
 	function mutate(node) {
-		const property = coercePropertyName({
+		const property = resolvePropertyName({
 			heading: node.value,
 			systemProperties,
 		});
@@ -345,7 +345,7 @@ function coerceBizopsPropertiesToType({ primitiveTypesMap, enums }) {
 		.use(createBizopsNameNode)
 		.use(createBizopsDescriptionNode)
 		.use(createBizopsPropertyNodes)
-		.use(coerceBizopsPropertyNames, {
+		.use(resolveBizopsPropertyNames, {
 			systemProperties: bizOpsSystem.properties,
 			primitiveTypesMap: bizOpsSchema.primitiveTypesMap,
 		})

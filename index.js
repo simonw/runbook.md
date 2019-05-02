@@ -73,10 +73,6 @@ function flattenNodeToPlainString({ children = [] } = {}) {
 	}, '');
 }
 
-function convertListNodeToArray({ children = [] }) {
-	return children.map(flattenNodeToPlainString);
-}
-
 function normalizePropertyKey(key = '') {
 	return key
 		.normalize()
@@ -165,6 +161,7 @@ function resolveBizopsPropertyNames({ systemProperties }) {
 		});
 
 		if (!property) {
+			// TODO: convert to problem node here
 			throw new Error(
 				'this is where we should be collecting this up as an invalid property name and pointing the user at the line number',
 			);
@@ -193,6 +190,8 @@ const propertyCoercers = {
 		if (date) {
 			return date.toDateString();
 		}
+
+		// TODO: convert to problem node here
 		throw new Error(
 			'we should be noting this was a bad date and pointing user at line number',
 		);
@@ -204,6 +203,8 @@ const propertyCoercers = {
 		if (date) {
 			return date.toTimeString();
 		}
+
+		// TODO: convert to problem node here
 		throw new Error(
 			'we should be noting this was a bad time and pointing user at line number',
 		);
@@ -215,6 +216,8 @@ const propertyCoercers = {
 		if (date) {
 			return date.toISOString();
 		}
+
+		// TODO: convert to problem node here
 		throw new Error(
 			'we should be noting this was a bad DateTime and pointing user at line number',
 		);
@@ -227,6 +230,7 @@ const propertyCoercers = {
 			return number;
 		}
 
+		// TODO: convert to problem node here
 		throw new Error(
 			'we should be noting this was a bad integer and pointing user at line number',
 		);
@@ -238,12 +242,16 @@ const propertyCoercers = {
 		if (Number.isFinite(number)) {
 			return number;
 		}
+
+		// TODO: convert to problem node here
 		throw new Error(
 			'we should be noting this was a bad float and pointing user at line number',
 		);
 	},
 	Boolean(subdocument) {
-		const flattenedContent = flattenNodeToPlainString(subdocument);
+		const flattenedContent = flattenNodeToPlainString(
+			subdocument,
+		).toLowerCase();
 
 		switch (flattenedContent) {
 			case 'true':
@@ -255,6 +263,7 @@ const propertyCoercers = {
 			case '👎':
 				return false;
 			default:
+				// TODO: convert to problem node here
 				throw new Error(
 					'we should be noting this was a bad boolean and pointing user at line number',
 				);
@@ -273,6 +282,7 @@ function coerceBizopsPropertiesToType({ primitiveTypesMap, enums }) {
 			return;
 		}
 
+		// If it's an enum, make sure it's a valid value for that enum
 		if (node.propertyType in enums) {
 			const flattenedContent = normalizePropertyKey(
 				flattenNodeToPlainString(node.children[0]),
@@ -293,16 +303,13 @@ function coerceBizopsPropertiesToType({ primitiveTypesMap, enums }) {
 				return;
 			}
 
+			// TODO: convert to problem node here
 			throw new Error(
 				'we should be noting an invalid value for this enum and pointing user at line number',
 			);
 		}
 
-		if (new Set(['System', 'Team', 'Person']).has(node.propertyType)) {
-			node.children = convertListNodeToArray(node);
-			return 'unhandled';
-		}
-
+		// TODO: convert to problem node here
 		throw new Error(
 			'we should be noting an invalid property type and pointing user at line number',
 		);
@@ -315,8 +322,6 @@ function coerceBizopsPropertiesToType({ primitiveTypesMap, enums }) {
 
 (async function() {
 	await bizOpsSchema.refresh();
-
-	module.exports.schema = bizOpsSchema;
 
 	const bizOpsSystem = bizOpsSchema
 		.getTypes()

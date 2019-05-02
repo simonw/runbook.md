@@ -161,13 +161,13 @@ Yields:
 ### `Problem`
 
 ```idl
-interface Property <: Literal {
+interface Property <: Property {
   type: "problem"
 }
 ```
 
 **Problem** ([**Literal**](#literal)) represents a problem. Nodes that have been
 unable to be converted to a valid `Property` node may be converted to a
-`Problem`. A problems value is a `message` that can be displayed to help a user
-understand their problems. The `position` on the node can point the user at the
-line of the source that caused their problem.
+`Problem`. A `Problem`'s `value` is a message that can be displayed to help a
+user understand their problems. The `position` on the node can point the user at
+the line of the source that caused their problem.

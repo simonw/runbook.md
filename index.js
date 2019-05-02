@@ -271,8 +271,15 @@ const propertyCoercers = {
 	},
 };
 
-function coerceBizopsPropertiesToType({ primitiveTypesMap, enums }) {
+function coerceBizopsPropertiesToType({ typeNames, primitiveTypesMap, enums }) {
 	function mutate(node) {
+		// If we come across a main type (such as System), then in the markdown
+		// we will specify only a code
+		if (typeNames.has(node.propertyType)) {
+			node.propertyType = 'Code';
+		}
+
+		// If the propertyType is one of the primitive types, coerce it
 		if (node.propertyType in primitiveTypesMap) {
 			const primitiveType = primitiveTypesMap[node.propertyType];
 
@@ -340,6 +347,7 @@ function coerceBizopsPropertiesToType({ primitiveTypesMap, enums }) {
 			primitiveTypesMap: bizOpsSchema.primitiveTypesMap,
 		})
 		.use(coerceBizopsPropertiesToType, {
+			typeNames: new Set(bizOpsSchema.getTypes().map(type => type.name)),
 			primitiveTypesMap: bizOpsSchema.primitiveTypesMap,
 			enums: bizOpsSchema.getEnums(),
 		})

@@ -334,6 +334,8 @@ function coerceBizopsPropertiesToType({ typeNames, primitiveTypesMap, enums }) {
 		.getTypes()
 		.find(type => type.name === 'System');
 
+	const typeNames = new Set(bizOpsSchema.getTypes().map(type => type.name));
+
 	const processor = unified()
 		.use(remarkParse)
 		.use(lint)
@@ -347,7 +349,7 @@ function coerceBizopsPropertiesToType({ typeNames, primitiveTypesMap, enums }) {
 			primitiveTypesMap: bizOpsSchema.primitiveTypesMap,
 		})
 		.use(coerceBizopsPropertiesToType, {
-			typeNames: new Set(bizOpsSchema.getTypes().map(type => type.name)),
+			typeNames,
 			primitiveTypesMap: bizOpsSchema.primitiveTypesMap,
 			enums: bizOpsSchema.getEnums(),
 		})

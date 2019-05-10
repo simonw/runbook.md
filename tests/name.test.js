@@ -1,18 +1,18 @@
 const runbookmd = require('..');
-const here = require('dedent');
+const here = require('outdent').default;
 
 test('an h1 is parsed as name', async () => {
-	const { data, errors } = await runbookmd.parseRunbookString(
-		'# hello monkey',
-	);
+	const { data, errors } = await runbookmd.parseRunbookString(here`
+		# hello monkey
+	`);
 	expect(errors.length).toBe(0);
 	expect(data).toHaveProperty('name', 'hello monkey');
 });
 
 test('inline markdown is stripped', async () => {
-	const { data, errors } = await runbookmd.parseRunbookString(
-		"# Hello *monkey* _don't_ worry about a thing",
-	);
+	const { data, errors } = await runbookmd.parseRunbookString(here`
+		# Hello *monkey* _don't_ worry about a thing
+	`);
 	expect(errors.length).toBe(0);
 	expect(data).toHaveProperty(
 		'name',

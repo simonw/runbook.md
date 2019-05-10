@@ -158,16 +158,28 @@ Yields:
 }
 ```
 
+### `Message`
+
+```idl
+interface Message <: Literal {
+  type: "message"
+}
+```
+
+**Message** ([**Literal**](#literal)) represents a helpful message describing a
+[Problem](#problem).
+
 ### `Problem`
 
 ```idl
 interface Problem <: Property {
-  type: "problem"
+  type: "problem",
+  messages: sequence<Message>
 }
 ```
 
 **Problem** ([**Property**](#property)) represents a problem. Nodes that have been
 unable to be converted to a valid `Property` node may be converted to a
-`Problem`. A `Problem`'s `value` is a message that can be displayed to help a
-user understand their problems. The `position` on the node can point the user at
-the line of the source that caused their problem.
+`Problem`. A `Problem`'s `messages` is an array of messages that can be
+displayed to help a user understand their problems. The `position` on the node
+can point the user at the line of the source that caused their problem.

@@ -20,21 +20,45 @@ test('inline markdown is stripped', async () => {
 	);
 });
 
-xtest('more than one h1 is an error', async () => {
-	const { errors } = await runbookmd.parseRunbookString(here`
+test('more than one h1 is an error', async () => {
+	const twoNames = await runbookmd.parseRunbookString(here`
 		# hello monkey
 
 		# also this
 	`);
 
-	expect(errors.length).toBe(1);
+	const nineNames = await runbookmd.parseRunbookString(here`
+		# hello monkey
+		# bears
+		# also this
+		# hello monkey
+		# bears
+		# also this
+		# hello monkey
+		# bears
+		# also this
+	`);
+
+	expect(twoNames.errors.length).toBe(2);
+	expect(nineNames.errors.length).toBe(9);
+	expect(twoNames.data).not.toHaveProperty('name');
+	expect(nineNames.data).not.toHaveProperty('name');
 });
 
-test('no h1 means no name', async () => {
+test('no h1 is an error', async () => {
 	const { data, errors } = await runbookmd.parseRunbookString(here`
 		wow
 	`);
 
-	expect(errors.length).toBe(0);
-	expect(data).toHaveProperty('name', undefined);
+	expect(errors.length).toBe(1);
+	expect(data).not.toHaveProperty('name');
+});
+
+test('content before an h1 is an error', async () => {
+	const { data, errors } = await runbookmd.parseRunbookString(here`
+		wow
+	`);
+
+	expect(errors.length).toBe(1);
+	expect(data).not.toHaveProperty('name');
 });

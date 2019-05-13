@@ -74,7 +74,7 @@ jobs:
     steps:
       - attach_workspace_at_project
       - run:
-          name: Run tests
+          name: Run test
           command: make test
 
 

@@ -9,15 +9,12 @@ test('an h1 is parsed as name', async () => {
 	expect(data).toHaveProperty('name', 'hello monkey');
 });
 
-test('inline markdown is stripped', async () => {
+test('inline markdown in an H1 is an error', async () => {
 	const { data, errors } = await runbookmd.parseRunbookString(here`
 		# Hello *monkey* _don't_ worry about a thing
 	`);
-	expect(errors.length).toBe(0);
-	expect(data).toHaveProperty(
-		'name',
-		"Hello monkey don't worry about a thing",
-	);
+	expect(errors.length).toBe(1);
+	expect(data).not.toHaveProperty('name');
 });
 
 test('more than one h1 is an error', async () => {

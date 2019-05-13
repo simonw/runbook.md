@@ -1,3 +1,14 @@
 module.exports = function convertProblemNodeToErrorMessage(node) {
-	return `${node.message} at line ${node.position.start.line}`;
+	const {
+		message,
+		position: {
+			start: { line },
+		},
+	} = node;
+
+	if (line) {
+		return `${message} on or around line ${line}`;
+	}
+
+	return message;
 };

@@ -44,6 +44,18 @@ runbookMd.createStream = async function() {
 	return createStream(await this());
 };
 
+runbookMd.parseRunbookString = async function(runbook) {
+	const processor = await this();
+	const vfile = await processor.process(runbook);
+	try {
+		return JSON.parse(vfile.contents);
+	} catch (error) {
+		throw new Error(
+			'failed when trying to JSON parse the stringified output from `runbookmd`',
+		);
+	}
+};
+
 runbookMd.schema = bizopsSchema;
 
 module.exports = runbookMd;

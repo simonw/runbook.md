@@ -27,8 +27,8 @@ async function runbookMd() {
 		.use(noDuplicateHeadings)
 		.use(noMultipleTitles)
 		.use(createBizopsNameNode)
-		.use(createBizopsDescriptionNode)
 		.use(createBizopsPropertyNodes)
+		.use(createBizopsDescriptionNode)
 		.use(setBizopsPropertyNames, {
 			systemProperties: bizopsSystem.properties,
 		})

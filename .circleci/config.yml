@@ -94,7 +94,7 @@ jobs:
       - *install_aws_cli
 
       - deploy:
-          name: Serverless deploy test
+          name: Serverless deploy test.
           command: bash .circleci/do-exclusively.sh --branch $CIRCLE_BRANCH --job release_test make deploy
           environment:
             NODE_ENV: production

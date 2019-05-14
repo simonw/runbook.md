@@ -46,9 +46,9 @@ custom:
     noTimeout: true
 
 functions:
-  injest:
+  ingest:
     description: Injest a runbook.md
-    handler: dist/injestHandler.handler
+    handler: dist/ingestHandler.handler
     timeout: 30
     events:
       - http:

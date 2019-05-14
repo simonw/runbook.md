@@ -15,9 +15,6 @@ provider:
   deploymentBucket: artefacts.biz-ops-runbook-md.${env:AWS_ACCOUNT_ID}
   environment:
     BIZ_OPS_API_URL: ${env:BIZ_OPS_API_URL}
-    BIZ_OPS_API_KEY: ${env:BIZ_OPS_API_KEY}
-    BASE_HOST: ${env:BASE_HOST}
-    BIZ_OPS_HOST: ${env:BIZ_OPS_HOST}
     AWS_ACCOUNT_ID: ${env:AWS_ACCOUNT_ID}
     CONSOLE_LOG_LEVEL: info
     ENVIRONMENT: ${env:ENVIRONMENT}

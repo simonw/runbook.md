@@ -8,7 +8,7 @@ const Footer = () => (
 					{/* <p className="o-footer-services__logo">Origami</p> */}
 					<a
 						className="o-footer-services__icon-link o-footer-services__icon-link--github"
-						href="https://github.com/Financial-Times/system-operability-score"
+						href="https://github.com/Financial-Times/biz-ops-runbook-md"
 					>
 						View project on GitHub
 					</a>

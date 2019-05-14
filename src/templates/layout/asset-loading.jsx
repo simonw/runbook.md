@@ -16,7 +16,7 @@ const getPathToStaticAsset = fileName =>
 		config.get('IS_LAMBDA')
 			? `https://s3-eu-west-1.amazonaws.com/biz-ops-statics.${config.get(
 					'AWS_ACCOUNT_ID',
-			  )}/system-operability-score`
+			  )}/biz-ops-runbook-md`
 			: 'http://local.in.ft.com:8080/statics'
 	}/${webpackManifest[fileName]}`;
 

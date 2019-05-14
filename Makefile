@@ -42,7 +42,7 @@ upload-statics:
 	aws s3 sync \
 	--cache-control=public,max-age=31536000,immutable \
 	--exclude "*.json" \
-	./dist/browser s3://biz-ops-statics.${AWS_ACCOUNT_ID}/system-operability-score
+	./dist/browser s3://biz-ops-statics.${AWS_ACCOUNT_ID}/biz-ops-runbook-md
 
 deploy-aws:
 	serverless deploy --stage ${ENVIRONMENT}

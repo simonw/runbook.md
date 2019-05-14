@@ -7,7 +7,7 @@ const { Footer } = require('./footer');
 const Layout = props => (
 	<html className="core" lang="en">
 		<head>
-			<title>System Operability Score</title>
+			<title>RUNBOOK.MD</title>
 			<meta
 				name="viewport"
 				content="width=device-width, initial-scale=1.0"

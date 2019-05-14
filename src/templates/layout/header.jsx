@@ -1,39 +1,6 @@
 const { h } = require('hyperons');
 
-const Header = props => {
-	const delvGroupName = typeof props.deliveryGroupName;
-	const delvTeamName = typeof props.deliveryTeamName;
-	const delvSystCode = typeof props.systemCode;
-	let underline = null;
-	let teamName = null;
-	let systCode = null;
-	if (delvGroupName !== 'undefined') {
-		underline = (
-			<li>
-				<a href={`/Group/${props.deliveryGroupCode}`}>
-					{props.deliveryGroupName}
-				</a>
-			</li>
-		);
-	}
-
-	if (delvTeamName !== 'undefined') {
-		teamName = (
-			<li>
-				<a href={`/Team/${props.deliveryTeamCode}`}>
-					{props.deliveryTeamName}
-				</a>
-			</li>
-		);
-	}
-
-	if (delvSystCode !== 'undefined') {
-		systCode = (
-			<li>
-				<a href={`/System/${props.systemCode}`}>{props.systemCode}</a>
-			</li>
-		);
-	}
+const Header = () => {
 	return (
 		<div className="o-layout__header">
 			<div
@@ -70,7 +37,7 @@ const Header = props => {
 					<div className="o-header-services__logo" />
 					<div className="o-header-services__title">
 						<a className="o-header-services__product-name" href="/">
-							System Operability Score
+							RUNBOOK.MD
 						</a>{' '}
 						<small>
 							powered by{' '}
@@ -78,43 +45,6 @@ const Header = props => {
 						</small>
 					</div>
 				</div>
-				<nav
-					className="o-header-services__primary-nav"
-					aria-label="primary"
-				>
-					<ul className="o-header-services__primary-nav-list">
-						<li>
-							<a href="/">All Groups</a>
-						</li>
-						<li>
-							<a href="/teams">Team league table</a>
-						</li>
-						<li>
-							<a href="/systems">System league table</a>
-						</li>
-						<li>
-							<a href="/about">About</a>
-						</li>
-					</ul>
-				</nav>
-				{underline ? (
-					<nav
-						className="o-header-services__secondary-nav"
-						aria-label="secondary"
-						data-o-header-services-nav=""
-					>
-						<div className="o-header-services__secondary-nav-content">
-							<ol className="o-header-services__secondary-nav-list o-header-services__secondary-nav-list--ancestors">
-								<li>
-									<a href="/">All Groups</a>
-								</li>
-								{underline}
-								{teamName}
-								{systCode}
-							</ol>
-						</div>
-					</nav>
-				) : null}
 			</header>
 		</div>
 	);

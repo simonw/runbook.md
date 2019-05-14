@@ -3,9 +3,7 @@ const { h, Fragment } = require('hyperons');
 const ValidateForm = ({ systemCode, writeToBizOps, bizOpsApiKey, content }) => {
 	return (
 		<Fragment>
-			<h1 id="edit-form--title">
-				RUNBOOK.MD Content Validator and Importer
-			</h1>
+			<h1 id="edit-form--title">Content Validator and Importer</h1>
 			<form action="/" method="POST">
 				<div className="o-grid-container">
 					<div className="o-grid-row">

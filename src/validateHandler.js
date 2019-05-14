@@ -4,6 +4,7 @@ const querystring = require('qs');
 const response = require('./lib/response');
 const { createLambda } = require('./lib/lambda');
 const template = require('./templates/validate-page');
+const runbookMd = require('./lib/runbook.md');
 
 const responseHeaders = {
 	'Content-Type': 'application/json',
@@ -25,9 +26,10 @@ const handleForm = async event => {
 	);
 	const formData = event.body;
 	const jsonFormData = querystring.parse(formData);
+	const result = await runbookMd.parseRunbookString(jsonFormData.content);
 	return {
 		statusCode: 200,
-		body: JSON.stringify(jsonFormData),
+		body: JSON.stringify({ request: jsonFormData, result }),
 		headers: responseHeaders,
 	};
 };

@@ -62,7 +62,9 @@ functions:
       - http:
           path: /
           method: get
-
+      - http:
+          path: /
+          method: post
 plugins:
   - serverless-plugin-aws-alerts
   - serverless-log-forwarding

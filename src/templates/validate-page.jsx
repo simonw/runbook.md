@@ -4,7 +4,7 @@ const ValidateForm = ({ systemCode, writeToBizOps, bizOpsApiKey, content }) => {
 	return (
 		<Fragment>
 			<h1 id="edit-form--title">Content Validator and Importer</h1>
-			<form action="/" method="POST">
+			<form action={`${process.env.BASE_URL}/validate`} method="POST">
 				<div className="o-grid-container">
 					<div className="o-grid-row">
 						<div data-o-grid-colspan="3">

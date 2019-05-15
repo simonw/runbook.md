@@ -13,7 +13,7 @@ const responseHeaders = {
 
 const displayForm = async event => {
 	logger.info(
-		{ event: 'GET RUNBOOK-MD INJEST FORM', params: event },
+		{ event: 'GET RUNBOOK-MD INGEST FORM', params: event },
 		'Request for runbook.md form',
 	);
 	return response.page(template, {}, event);
@@ -21,7 +21,7 @@ const displayForm = async event => {
 
 const handleForm = async event => {
 	logger.info(
-		{ event: 'POST RUNBOOK-MD INJEST FORM', params: event },
+		{ event: 'POST RUNBOOK-MD INGEST FORM', params: event },
 		'Result of runbook.md form',
 	);
 	const formData = event.body;

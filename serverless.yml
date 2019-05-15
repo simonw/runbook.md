@@ -48,12 +48,12 @@ custom:
 
 functions:
   ingest:
-    description: Injest a runbook.md
+    description: Ingest a runbook.md
     handler: dist/ingestHandler.handler
     timeout: 30
     events:
       - http:
-          path: /injest
+          path: /ingest
           method: post
   validate:
     description: Validate an runbook.md

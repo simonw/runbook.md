@@ -11,7 +11,7 @@ const handler = async event => {
 	const runbook = event.body || '{}';
 	const result = JSON.parse(runbook);
 	logger.info(
-		{ event: 'RUNBOOK_INJESTION', runbook, result },
+		{ event: 'RUNBOOK_INGESTION', runbook, result },
 		'Validate json body',
 	);
 	return {

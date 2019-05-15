@@ -8,7 +8,6 @@ const responseHeaders = {
 };
 
 const handler = async event => {
-	console.log(event);
 	const request = JSON.parse(event.body);
 	const result = await runbookMd.parseRunbookString(request.content);
 	logger.info(

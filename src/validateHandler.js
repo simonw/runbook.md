@@ -26,17 +26,17 @@ const handleForm = async event => {
 	);
 	const formData = event.body;
 	const jsonFormData = querystring.parse(formData);
-	const options = {
+	const postToIngestEndpoint = {
 		method: 'POST',
 		uri: `${process.env.BASE_URL}/ingest`,
 		body: jsonFormData,
 		json: true,
 	};
 	logger.info(
-		{ event: 'POST to ingest endpoint', options },
+		{ event: 'POST to ingest endpoint', options: postToIngestEndpoint },
 		'Request for RUNBOOK.MD parse',
 	);
-	const result = await httpRequest(options);
+	const result = await httpRequest(postToIngestEndpoint);
 	return {
 		statusCode: 200,
 		body: JSON.stringify(result),

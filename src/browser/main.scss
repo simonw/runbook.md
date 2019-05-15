@@ -1,0 +1,33 @@
+@import 'meter';
+
+.o-header-services__title small {
+	margin-left: 5px;
+	margin-top: 5px;
+}
+.o-header-services__title small a {
+	color: var(--o-colors-teal-90);
+	font-style: italic;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.o-header-services__title small a:hover {
+	text-decoration: underline;
+}
+
+.o-labels--red {
+	background: var(--o-colors-crimson);
+	color: white;
+}
+
+.o-labels--amber {
+	background: var(--o-colors-mandarin);
+}
+
+.o-labels--green {
+	background: var(--o-colors-wasabi);
+}
+
+.unimplemented {
+	display: none;
+}

@@ -1,0 +1,85 @@
+service: biz-ops-runbook-md
+
+provider:
+  name: aws
+  stackTags:
+    description: Automated import of runbook content from github runbook.md
+    systemCode: ${self:service}
+    teamDL: reliability.engineering@ft.com
+    environment: ${env:ENVIRONMENT_TAG}
+  runtime: nodejs8.10
+  stage: ${opt:stage, 'test'}
+  region: eu-west-1
+  role: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/FTApplicationRoleFor_biz-ops-runbook-md
+  timeout: 30
+  deploymentBucket: artefacts.biz-ops-runbook-md.${env:AWS_ACCOUNT_ID}
+  environment:
+    BIZ_OPS_API_URL: ${env:BIZ_OPS_API_URL}
+    AWS_ACCOUNT_ID: ${env:AWS_ACCOUNT_ID}
+    CONSOLE_LOG_LEVEL: info
+    ENVIRONMENT: ${env:ENVIRONMENT}
+    NODE_ENV: ${self:custom.${self:provider.stage}.NODE_ENV, 'production'}
+    STAGE: ${self:provider.stage}
+    SYSTEM_CODE: ${self:service}
+
+custom:
+
+  alerts:
+    topics:
+      ok: arn:aws:sns:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cloudwatch-alarms
+      alarm: arn:aws:sns:${self:provider.region}:${env:AWS_ACCOUNT_ID}:cloudwatch-alarms
+    global:
+      - functionErrors
+
+  logForwarding:
+    destinationARN: ${cf:aws-composer-auditing-global-stack.SplunkCloudIndexerLambdaarn}
+    filterPattern: "-\"RequestId: \""
+    stages:
+      - test
+      - prod
+
+  serverless-offline:
+    dontPrintOutput: true
+    prefix: ''
+    host: local.in.ft.com
+    port: 3000
+    noTimeout: true
+
+functions:
+  ingest:
+    description: Injest a runbook.md
+    handler: dist/ingestHandler.handler
+    timeout: 30
+    events:
+      - http:
+          path: /injest
+          method: post
+  validate:
+    description: Validate an runbook.md
+    handler: dist/validateHandler.handler
+    timeout: 30
+    events:
+      - http:
+          path: /
+          method: get
+      - http:
+          path: /
+          method: post
+plugins:
+  - serverless-plugin-aws-alerts
+  - serverless-log-forwarding
+  - serverless-offline
+
+package:
+  exclude:
+    - certs/**
+    - coverage/**
+    - test/**
+    - .circleci/**
+    - cdn/**
+    - terraform.tfstate
+    - terraform.tfstate.backup
+    - .terraform/**
+    - .biz-ops
+    - bin/**
+    - scripts

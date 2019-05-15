@@ -1,0 +1,110 @@
+$meter-height: 9px;
+$meter-background-color: var(--o-colors-black-20);
+$meter-optimum-color: var(--o-colors-jade);
+$meter-suboptimum-color: var(--o-colors-mandarin);
+$meter-bad-color: var(--o-colors-crimson);
+$meter-value-background-color: var(--o-colors-black);
+$meter-ft-value-background-color: var(--o-colors-black-60);
+$meter-value-text-color: var(--o-colors-white);
+
+.score-meter {
+	padding-top: 11px;
+	padding-bottom: 36px;
+	position: relative;
+}
+
+meter {
+	width: 100%;
+	height: $meter-height;
+}
+
+// -webkit-appearance: none is needed for Safari to apply custom styling to
+// the meter but in Chrome it causes the meter to disappear, so target it to
+// Safari only
+@media not all and (min-resolution: 0.001dpcm) {
+	@supports (-webkit-appearance: none) {
+		meter {
+			-webkit-appearance: none;
+		}
+	}
+}
+
+meter::-webkit-meter-bar {
+	background: $meter-background-color;
+}
+
+meter::-webkit-meter-optimum-value {
+	background: $meter-optimum-color;
+}
+
+meter::-webkit-meter-suboptimum-value {
+	background: $meter-suboptimum-color;
+}
+
+meter::-webkit-meter-even-less-good-value {
+	background: $meter-bad-color;
+}
+
+meter::-moz-meter-bar {
+	background: $meter-background-color;
+}
+
+meter:-moz-meter-optimum::-moz-meter-bar {
+	background: $meter-optimum-color;
+}
+
+meter:-moz-meter-sub-optimum::-moz-meter-bar {
+	background: $meter-suboptimum-color;
+}
+
+meter:-moz-meter-sub-sub-optimum::-moz-meter-bar {
+	background: $meter-bad-color;
+}
+
+.score-meter__container {
+	position: relative;
+}
+
+.score-meter__value {
+	position: absolute;
+	padding: 0 5px;
+	background: $meter-value-background-color;
+	color: $meter-value-text-color;
+	line-height: 24px;
+	text-align: center;
+	top: calc(#{$meter-height} + 7px);
+	transform: translateX(-50%);
+
+	&::before {
+		content: '';
+		transform: translateX(-50%);
+		position: absolute;
+		bottom: 100%;
+		left: 50%;
+		border: 4px solid transparent;
+		border-bottom-width: 6px;
+		border-bottom-color: $meter-value-background-color;
+	}
+}
+
+.score-meter__ft-value {
+	position: absolute;
+	padding: 0 5px;
+	background: $meter-ft-value-background-color;
+	color: $meter-value-text-color;
+	line-height: 24px;
+	text-align: center;
+	top: calc(#{$meter-height} + 7px);
+	transform: translateX(-50%);
+
+	&::before {
+		content: '';
+		transform: translateX(-50%);
+		position: absolute;
+		bottom: 100%;
+		left: 50%;
+		border: 4px solid transparent;
+		border-bottom-width: 6px;
+		border-bottom-color: $meter-ft-value-background-color;
+	}
+}

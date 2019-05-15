@@ -51,7 +51,7 @@ test('no h1 is an error', async () => {
 	expect(data).not.toHaveProperty('name');
 });
 
-xtest('content before an h1 is an error', async () => {
+test.skip('content before an h1 is an error', async () => {
 	const { data, errors } = await runbookmd.parseRunbookString(here`
 		wow
 		# hello

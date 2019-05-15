@@ -1,4 +1,4 @@
-const runbookMd = require('./lib/runbook.md');
+const runbookMd = require('./src/lib/runbook.md');
 
 module.exports = runbookMd;
 
@@ -9,7 +9,7 @@ module.exports = runbookMd;
 const inShellMode = !module.parent;
 
 if (inShellMode) {
-	runbookMd.createStream().then(function(stream) {
+	runbookMd.createStream().then(stream => {
 		process.stdin.pipe(stream).pipe(process.stdout);
 	});
 }

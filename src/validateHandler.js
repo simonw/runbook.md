@@ -21,17 +21,22 @@ const displayForm = async event => {
 
 const handleForm = async event => {
 	logger.info(
-		{ event: 'POST RUNBOOK-MD INGEST FORM', params: event },
+		{ event: 'Received RUNBOOK-MD INGEST FORM', params: event },
 		'Result of runbook.md form',
 	);
 	const formData = event.body;
 	const jsonFormData = querystring.parse(formData);
-	const result = await httpRequest({
+	const options = {
 		method: 'POST',
 		uri: `${process.env.BASE_URL}/ingest`,
 		body: jsonFormData,
 		json: true,
-	});
+	};
+	logger.info(
+		{ event: 'POST to ingest endpoint', options },
+		'Request for RUNBOOK.MD parse',
+	);
+	const result = await httpRequest(options);
 	return {
 		statusCode: 200,
 		body: JSON.stringify(result),

@@ -30,7 +30,7 @@ const formatEventForLogs = event =>
 
 const createLambda = (
 	handler,
-	{ requireS3o = true, errorHandler = responseHelper.errorHtml } = {},
+	{ requireS3o = false, errorHandler = responseHelper.errorHtml } = {},
 ) => async (event, context = {}) => {
 	context.callbackWaitsForEmptyEventLoop = false;
 	if ('warmUp' in event) {

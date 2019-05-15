@@ -17,7 +17,6 @@ const config = {
 	AWS_ACCOUNT_ID: process.env.AWS_ACCOUNT_ID,
 };
 
-console.log(config);
 logger.info({ config }, 'Config');
 logger.info(`NODE_ENV: ${config.NODE_ENV}`);
 

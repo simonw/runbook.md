@@ -39,6 +39,8 @@
     "remark-lint-no-multiple-toplevel-headings": "^1.0.2",
     "remark-parse": "^6.0.3",
     "remark-stringify": "^6.0.4",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
     "unified": "^7.1.0",
     "unified-stream": "^1.0.4",
     "unist-builder": "^1.0.3",

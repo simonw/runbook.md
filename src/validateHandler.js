@@ -1,10 +1,10 @@
 const logger = require('@financial-times/lambda-logger');
 const httpError = require('http-errors');
+const httpRequest = require('request-promise');
 const querystring = require('qs');
 const response = require('./lib/response');
 const { createLambda } = require('./lib/lambda');
 const template = require('./templates/validate-page');
-const runbookMd = require('./lib/runbook.md');
 
 const responseHeaders = {
 	'Content-Type': 'application/json',
@@ -21,15 +21,25 @@ const displayForm = async event => {
 
 const handleForm = async event => {
 	logger.info(
-		{ event: 'POST RUNBOOK-MD INGEST FORM', params: event },
+		{ event: 'Received RUNBOOK-MD INGEST FORM', params: event },
 		'Result of runbook.md form',
 	);
 	const formData = event.body;
 	const jsonFormData = querystring.parse(formData);
-	const result = await runbookMd.parseRunbookString(jsonFormData.content);
+	const postToIngestEndpoint = {
+		method: 'POST',
+		uri: `${process.env.BASE_URL}/ingest`,
+		body: jsonFormData,
+		json: true,
+	};
+	logger.info(
+		{ event: 'POST to ingest endpoint', options: postToIngestEndpoint },
+		'Request for RUNBOOK.MD parse',
+	);
+	const result = await httpRequest(postToIngestEndpoint);
 	return {
 		statusCode: 200,
-		body: JSON.stringify({ request: jsonFormData, result }),
+		body: JSON.stringify(result),
 		headers: responseHeaders,
 	};
 };

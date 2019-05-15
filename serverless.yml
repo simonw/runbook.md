@@ -16,6 +16,7 @@ provider:
   environment:
     BIZ_OPS_API_URL: ${env:BIZ_OPS_API_URL}
     BASE_HOST: ${env:BASE_HOST}
+    BASE_URL: ${env:BASE_URL}
     AWS_ACCOUNT_ID: ${env:AWS_ACCOUNT_ID}
     CONSOLE_LOG_LEVEL: info
     ENVIRONMENT: ${env:ENVIRONMENT}
@@ -64,7 +65,7 @@ functions:
           path: /
           method: get
       - http:
-          path: /
+          path: /validate
           method: post
 plugins:
   - serverless-plugin-aws-alerts

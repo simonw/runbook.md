@@ -3,6 +3,7 @@ const propertyCoercers = require('../property-coercers');
 const convertNodeToProblem = require('./convert-node-to-problem');
 const normalizePropertyKey = require('../normalize-property-key');
 const flattenNodeToPlainString = require('../flatten-node-to-plain-string');
+const setPropertyNodeValue = require('../set-property-node-value');
 
 module.exports = function coerceBizopsPropertiesToType({
 	typeNames,
@@ -27,7 +28,7 @@ module.exports = function coerceBizopsPropertiesToType({
 			const coercion = coercer(subdocument);
 
 			if (coercion.valid) {
-				node.children = coercion.value;
+				setPropertyNodeValue(node, coercion.value);
 			} else {
 				convertNodeToProblem({
 					node,
@@ -53,7 +54,7 @@ module.exports = function coerceBizopsPropertiesToType({
 			});
 
 			if (validValue) {
-				node.children = validValue.name;
+				setPropertyNodeValue(node, validValue.value);
 			} else {
 				convertNodeToProblem({
 					node,

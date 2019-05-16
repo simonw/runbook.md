@@ -6,7 +6,7 @@ const build = require('unist-builder');
 const reduceSubdocumentHeadings = remarkBehead({ depth: -2 });
 
 // TODO: do not mutate the subdoc
-module.exports = function stringifySubdocument(node) {
+module.exports = function renderSubdocument(node) {
 	reduceSubdocumentHeadings(node);
 
 	const subdocument = build('root', {

@@ -1,4 +1,4 @@
-const stringifySubdocument = require('../stringify-subdocument');
+const renderSubdocument = require('../render-subdocument');
 const flattenNodeToPlainString = require('../flatten-node-to-plain-string');
 
 /*
@@ -11,7 +11,7 @@ module.exports = {
 	String(subdocument) {
 		return {
 			valid: true,
-			value: stringifySubdocument(subdocument),
+			value: renderSubdocument(subdocument),
 		};
 	},
 	Date(subdocument) {

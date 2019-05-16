@@ -124,13 +124,17 @@ Yields, for description:
 interface Property <: Subdocument {
   type: "property",
   propertyType: [biz-ops property type],
-  children: [mdast Root]
+  children: [mdast Root],
+  key: [String]
 }
 ```
 
 **Property** ([**Subdocument**](#subdocument)) represents a
 property in a biz-ops runbook. The biz-ops property types are defined in
 [biz-ops-schema](https://github.com/Financial-Times/biz-ops-schema/blob/01ae5ad/lib/primitive-types-map.js)
+The only permitted children are an mdast subdocument. The key is the key for
+that property. If there are no children, a value may be defined which is the
+processed value.
 
 For example, the following markdown:
 

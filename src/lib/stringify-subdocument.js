@@ -3,7 +3,7 @@ const remarkStringify = require('remark-stringify');
 const remarkBehead = require('remark-behead');
 const build = require('unist-builder');
 
-const reduceSubdocumentHeadings = remarkBehead({ depth: -1 });
+const reduceSubdocumentHeadings = remarkBehead({ depth: -2 });
 
 // TODO: do not mutate the subdoc
 module.exports = function stringifySubdocument(node) {

@@ -2,6 +2,7 @@ const { selectAll } = require('unist-util-select');
 const renderSubdocument = require('../render-subdocument');
 const flattenNodeToPlainString = require('../flatten-node-to-plain-string');
 
+const checkDateIsValid = date => !Number.isNaN(Number(date));
 /*
   This is naïve and can return surprising results. If there are any listItems
   inside a document of a type that is marked as hasMany, you'll get only those
@@ -49,8 +50,9 @@ module.exports = {
 	Date(subdocument) {
 		const flattenedContent = flattenNodeToPlainString(subdocument);
 		const date = new Date(flattenedContent);
+		const dateIsValid = checkDateIsValid(date);
 
-		if (date) {
+		if (dateIsValid) {
 			return {
 				valid: true,
 				value: date.toISOString(),

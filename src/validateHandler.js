@@ -29,6 +29,7 @@ const handleForm = async event => {
 	const options = {
 		method: 'POST',
 		body: JSON.stringify(jsonFormData),
+		headers: { Cookie: event.headers.Cookie },
 	};
 	const fetchResponse = await nodeFetch(
 		`${process.env.BASE_URL}/ingest`,

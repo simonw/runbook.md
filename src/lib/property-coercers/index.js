@@ -53,77 +53,13 @@ module.exports = {
 		if (date) {
 			return {
 				valid: true,
-				value: date.toDateString(),
-			};
-		}
-
-		return {
-			valid: false,
-			value: `i couldn't resolve ${flattenedContent} to a Date`,
-		};
-	},
-	Time(subdocument) {
-		const flattenedContent = flattenNodeToPlainString(subdocument);
-		const date = new Date(flattenedContent);
-
-		if (date) {
-			return {
-				valid: true,
-				value: date.toTimeString(),
-			};
-		}
-
-		return {
-			valid: false,
-			value: `i couldn't resolve ${flattenedContent} to a Time`,
-		};
-	},
-	DateTime(subdocument) {
-		const flattenedContent = flattenNodeToPlainString(subdocument);
-		const date = new Date(flattenedContent);
-
-		if (date) {
-			return {
-				valid: true,
 				value: date.toISOString(),
 			};
 		}
 
 		return {
 			valid: false,
-			value: `i couldn't resolve ${flattenedContent} to a DateTime`,
-		};
-	},
-	Int(subdocument) {
-		const flattenedContent = flattenNodeToPlainString(subdocument);
-		const number = Number(flattenedContent);
-
-		if (Number.isInteger(number)) {
-			return {
-				valid: true,
-				value: number,
-			};
-		}
-
-		return {
-			valid: false,
-			value: `i couldn't resolve ${flattenedContent} to an Int`,
-		};
-	},
-	Float(subdocument) {
-		const flattenedContent = flattenNodeToPlainString(subdocument);
-		const number = Number(flattenedContent);
-
-		if (Number.isFinite(number)) {
-			return {
-				valid: true,
-				value: number,
-			};
-		}
-
-		return {
-			valid: false,
-			value: `i couldn't resolve ${flattenedContent} to a Float`,
+			value: `i couldn't resolve ${flattenedContent} to a Date`,
 		};
 	},
 	Boolean(subdocument) {

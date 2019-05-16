@@ -19,12 +19,11 @@ module.exports = function stringifyBoast() {
 		});
 
 		visit(root, 'property', node => {
-			data[node.value] = node.children;
+			data[node.key] = node.value;
 		});
 
-		const errors = selectAll('problem', root).map(
-			convertProblemToErrorMessage,
-		);
+		const problems = selectAll('problem', root);
+		const errors = problems.map(convertProblemToErrorMessage);
 
 		return stringifyJson({ data, errors });
 	};

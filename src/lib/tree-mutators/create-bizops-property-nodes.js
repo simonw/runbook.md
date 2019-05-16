@@ -8,7 +8,7 @@ module.exports = function createBizopsPropertyNodes() {
 		return [
 			{
 				type: 'property',
-				value: flattenNodeToPlainString(start),
+				key: flattenNodeToPlainString(start),
 				position: start.position,
 				children: [build('root', { children: nodes })],
 			},

@@ -5,7 +5,7 @@ const convertNodeToProblem = require('./convert-node-to-problem');
 module.exports = function setBizopsPropertyNames({ systemProperties }) {
 	function mutate(node) {
 		const property = resolvePropertyName({
-			heading: node.value,
+			heading: node.key,
 			systemProperties,
 		});
 
@@ -19,7 +19,7 @@ module.exports = function setBizopsPropertyNames({ systemProperties }) {
 
 		const [name, type] = property;
 
-		node.value = name;
+		node.key = name;
 
 		node.propertyType = type.type;
 	}

@@ -1,5 +1,5 @@
 const visit = require('unist-util-visit-parents');
-const resolvePropertyName = require('../resolve-property-name');
+const resolvePropertyName = require('../resolve-system-property-name');
 const convertNodeToProblem = require('./convert-node-to-problem');
 
 module.exports = function setBizopsPropertyNames({ systemProperties }) {

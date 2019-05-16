@@ -1,6 +1,6 @@
 const logger = require('@financial-times/lambda-logger');
 const httpError = require('http-errors');
-const httpRequest = require('request-promise');
+const nodeFetch = require('node-fetch');
 const querystring = require('qs');
 const response = require('./lib/response');
 const { createLambda } = require('./lib/lambda');
@@ -26,17 +26,29 @@ const handleForm = async event => {
 	);
 	const formData = event.body;
 	const jsonFormData = querystring.parse(formData);
-	const postToIngestEndpoint = {
+	const options = {
 		method: 'POST',
-		uri: `${process.env.BASE_URL}/ingest`,
-		body: jsonFormData,
-		json: true,
+		body: JSON.stringify(jsonFormData),
 	};
-	logger.info(
-		{ event: 'POST to ingest endpoint', options: postToIngestEndpoint },
-		'Request for RUNBOOK.MD parse',
+	const fetchResponse = await nodeFetch(
+		`${process.env.BASE_URL}/ingest`,
+		options,
 	);
-	const result = await httpRequest(postToIngestEndpoint);
+	if (!fetchResponse.ok) {
+		throw httpError(
+			fetchResponse.status,
+			`Attempt to access ingest failed with ${fetchResponse.statusText}`,
+		);
+	}
+	logger.info(
+		{ event: 'POSTED to /ingest endpoint', options },
+		'Waiting for validation response',
+	);
+	const result = await fetchResponse.json();
+	logger.info(
+		{ event: 'Result from /ingest endpoint', result },
+		'Validation response',
+	);
 	return {
 		statusCode: 200,
 		body: JSON.stringify(result),

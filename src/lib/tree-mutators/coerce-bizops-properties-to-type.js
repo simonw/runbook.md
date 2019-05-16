@@ -7,10 +7,12 @@ const setPropertyNodeValue = require('../set-property-node-value');
 
 module.exports = function coerceBizopsPropertiesToType({
 	typeNames,
+	systemProperties,
 	primitiveTypesMap,
 	enums,
 }) {
 	function mutate(node) {
+		const { hasMany } = systemProperties[node.key];
 		// If we come across a main type (such as System), then in the markdown
 		// we will specify only a code
 		if (typeNames.has(node.propertyType)) {
@@ -25,7 +27,7 @@ module.exports = function coerceBizopsPropertiesToType({
 
 			const [subdocument] = node.children;
 
-			const coercion = coercer(subdocument);
+			const coercion = coercer(subdocument, { hasMany });
 
 			if (coercion.valid) {
 				setPropertyNodeValue(node, coercion.value);

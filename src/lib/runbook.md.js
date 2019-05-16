@@ -4,7 +4,7 @@ const noMultipleTitles = require('remark-lint-no-multiple-toplevel-headings');
 const remarkParse = require('remark-parse');
 const createStream = require('unified-stream');
 const unified = require('unified');
-const bizopsSchema = require('./get-configured-schema.js');
+const schema = require('./get-configured-schema.js');
 const createBizopsNameNode = require('./tree-mutators/create-bizops-name-node');
 const createBizopsDescriptionNode = require('./tree-mutators/create-bizops-description-node');
 const createBizopsPropertyNodes = require('./tree-mutators/create-bizops-property-nodes');
@@ -13,13 +13,13 @@ const coerceBizopsPropertiesToType = require('./tree-mutators/coerce-bizops-prop
 const stringifyBoast = require('./unist-stringifiers/stringify-boast');
 
 async function runbookMd() {
-	await bizopsSchema.refresh();
+	await schema.refresh();
 
-	const bizopsSystem = bizopsSchema
-		.getTypes()
-		.find(type => type.name === 'System');
+	const types = schema.getTypes();
 
-	const typeNames = new Set(bizopsSchema.getTypes().map(type => type.name));
+	const system = schema.getTypes().find(type => type.name === 'System');
+
+	const typeNames = new Set(types.map(type => type.name));
 
 	return unified()
 		.use(remarkParse)
@@ -30,12 +30,13 @@ async function runbookMd() {
 		.use(createBizopsPropertyNodes)
 		.use(createBizopsDescriptionNode)
 		.use(setBizopsPropertyNames, {
-			systemProperties: bizopsSystem.properties,
+			systemProperties: system.properties,
 		})
 		.use(coerceBizopsPropertiesToType, {
+			systemProperties: system.properties,
 			typeNames,
-			primitiveTypesMap: bizopsSchema.primitiveTypesMap,
-			enums: bizopsSchema.getEnums(),
+			primitiveTypesMap: schema.primitiveTypesMap,
+			enums: schema.getEnums(),
 		})
 		.use(stringifyBoast);
 }
@@ -56,6 +57,6 @@ runbookMd.parseRunbookString = async function(runbook) {
 	}
 };
 
-runbookMd.schema = bizopsSchema;
+runbookMd.schema = schema;
 
 module.exports = runbookMd;

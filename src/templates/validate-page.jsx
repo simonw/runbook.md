@@ -6,7 +6,7 @@ const ValidateForm = ({ systemCode, writeToBizOps, bizOpsApiKey, content }) => {
 			<h1 id="edit-form--title">Content Validator and Importer</h1>
 			<form action={`${process.env.BASE_URL}/validate`} method="POST">
 				<div className="o-grid-container">
-					<div className="o-grid-row">
+					<div className="o-grid-row o-forms--wide">
 						<div data-o-grid-colspan="3">
 							<div className="validation-code">
 								<label
@@ -68,7 +68,7 @@ const ValidateForm = ({ systemCode, writeToBizOps, bizOpsApiKey, content }) => {
 								</select>
 							</div>
 						</div>
-						<div data-o-grid-colspan="4">
+						<div data-o-grid-colspan="6">
 							<div className="validation-key">
 								<label
 									className="o-forms__label"

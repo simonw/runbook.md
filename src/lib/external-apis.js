@@ -2,9 +2,9 @@ const logger = require('@financial-times/lambda-logger');
 const httpError = require('http-errors');
 const nodeFetch = require('node-fetch');
 
-const callExternalApi = async ({ name, url, payload, headers }) => {
+const callExternalApi = async ({ name, method, url, payload, headers }) => {
 	const options = {
-		method: 'POST',
+		method,
 		body: JSON.stringify(payload),
 		headers,
 	};
@@ -24,51 +24,40 @@ const callExternalApi = async ({ name, url, payload, headers }) => {
 	return fetchResponse.json();
 };
 
-const attemptParse = async (event, request) => {
-	return callExternalApi({
+const attemptParse = async (event, request) =>
+	callExternalApi({
 		name: 'RUNBOOK.MD parse',
+		method: 'POST',
 		url: `${process.env.BASE_URL}/ingest`,
 		payload: request,
-		// headers: { Cookie: event.headers.Cookie },
 	});
-};
 
-const attemptScore = async (event, request) => {
-	return callExternalApi({
+const attemptScore = async (event, request) =>
+	callExternalApi({
 		name: 'SOS validate',
+		method: 'POST',
 		url: `${process.env.SOS_URL}/api/v1/validate`,
 		payload: request,
-		// headers: { Cookie: event.headers.Cookie },
 	});
-};
 
 const updateBizOps = async (event, apiKey, systemCode, content) => {
-	const headers = {
-		'x-api-key': apiKey,
-		'client-id': 'biz-ops-runbook-md',
-		'content-type': 'application/json',
-		'client-user-id': event.s3oUsername,
-	};
-	const contentFields = Object.keys(content)
+	const queryString = `?lockFields=${Object.keys(content)
 		.map(name => name)
-		.join(',');
-	const queryString = `?lockFields=${contentFields}`;
-	const url = `${process.env.BIZ_OPS_API_URL}/v2/node/System/${systemCode}`;
-	const options = {
+		.join(',')}`;
+	return callExternalApi({
+		name: 'Biz Ops Update',
 		method: 'PATCH',
-		headers,
-		body: JSON.stringify(content),
-	};
-	const response = await nodeFetch(`${url}${queryString}`, options);
-	if (!response.ok) {
-		throw httpError(
-			response.status,
-			`Attempt to access BIZ_OPS ${url}${queryString} failed with ${
-				response.statusText
-			}`,
-		);
-	}
-	return response.json();
+		url: `${
+			process.env.BIZ_OPS_API_URL
+		}/v2/node/System/${systemCode}${queryString}`,
+		payload: content,
+		headers: {
+			'x-api-key': apiKey,
+			'client-id': 'biz-ops-runbook-md',
+			'content-type': 'application/json',
+			'client-user-id': event.s3oUsername,
+		},
+	});
 };
 
 module.exports = {

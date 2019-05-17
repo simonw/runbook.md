@@ -29,16 +29,16 @@ const attemptParse = async (event, request) => {
 		name: 'RUNBOOK.MD parse',
 		url: `${process.env.BASE_URL}/ingest`,
 		payload: request,
-		headers: { Cookie: event.headers.Cookie },
+		// headers: { Cookie: event.headers.Cookie },
 	});
 };
 
 const attemptScore = async (event, request) => {
 	return callExternalApi({
 		name: 'SOS validate',
-		url: `${process.env.SOS_URL}/validate`,
+		url: `${process.env.SOS_URL}/api/v1/validate`,
 		payload: request,
-		headers: { Cookie: event.headers.Cookie },
+		// headers: { Cookie: event.headers.Cookie },
 	});
 };
 

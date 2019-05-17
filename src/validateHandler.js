@@ -32,7 +32,7 @@ const handleForm = async event => {
 	const jsonFormData = querystring.parse(formData);
 
 	const parseResult = await attemptParse(event, jsonFormData);
-	const validateResult = {}; // await attemptScore(event, parseResult.data);
+	const validateResult = await attemptScore(event, parseResult.data);
 	let writeResult = {};
 	if (jsonFormData.writeToBizOps) {
 		if (jsonFormData.bizOpsApiKey) {

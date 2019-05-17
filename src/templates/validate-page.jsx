@@ -32,7 +32,7 @@ const ValidateForm = ({ systemCode, writeToBizOps, bizOpsApiKey, content }) => {
 							<div className="validation-write">
 								<label
 									className="o-forms__label"
-									htmlFor="writeFlag"
+									htmlFor="writeToBizOps"
 								>
 									Write to BizOps?
 								</label>
@@ -41,8 +41,8 @@ const ValidateForm = ({ systemCode, writeToBizOps, bizOpsApiKey, content }) => {
 									biz-ops; default in No.
 								</description>
 								<select
-									name="writeFlag"
-									id="writeFlag"
+									name="writeToBizOps"
+									id="writeToBizOps"
 									className="o-forms__select"
 								>
 									<option
@@ -72,7 +72,7 @@ const ValidateForm = ({ systemCode, writeToBizOps, bizOpsApiKey, content }) => {
 							<div className="validation-key">
 								<label
 									className="o-forms__label"
-									htmlFor="apiKey"
+									htmlFor="bizOpsApiKey"
 								>
 									Your Biz Ops API Key
 								</label>
@@ -85,8 +85,8 @@ const ValidateForm = ({ systemCode, writeToBizOps, bizOpsApiKey, content }) => {
 								<input
 									type="text"
 									className="o-forms__text"
-									name="apiKey"
-									id="apiKey"
+									name="bizOpsApiKey"
+									id="bizOpsApiKey"
 									value={bizOpsApiKey}
 								/>
 							</div>

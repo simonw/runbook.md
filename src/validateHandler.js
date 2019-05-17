@@ -35,10 +35,10 @@ const handleForm = async event => {
 	const validateResult = {}; // await attemptScore(event, parseResult.data);
 	let writeResult = {};
 	if (jsonFormData.writeToBizOps) {
-		if (jsonFormData.apiKey) {
+		if (jsonFormData.bizOpsApiKey) {
 			writeResult = await updateBizOps(
 				event,
-				jsonFormData.apiKey,
+				jsonFormData.bizOpsApiKey,
 				jsonFormData.systemCode,
 				parseResult.data,
 			);

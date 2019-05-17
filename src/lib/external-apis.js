@@ -12,7 +12,7 @@ const callExternalApi = async ({ name, url, payload, headers }) => {
 	if (!fetchResponse.ok) {
 		throw httpError(
 			fetchResponse.status,
-			`Attempt to access ${name} ${url} failed with ${
+			`Attempt to access ${name} ${url} ${options} failed with ${
 				fetchResponse.statusText
 			}`,
 		);
@@ -50,7 +50,10 @@ const updateBizOps = async (event, apiKey, systemCode, content) => {
 		'content-type': 'application/json',
 		'client-user-id': event.clientUserId,
 	};
-	const queryString = '?relationshipAction=merge';
+	const contentFields = Object.keys(content)
+		.map(name => name)
+		.join(',');
+	const queryString = `?relationshipAction=merge&lockFields=${contentFields}`;
 	const url = `${process.env.BIZ_OPS_API_URL}/v2/node/System/${systemCode}`;
 	const options = {
 		method: 'POST',
@@ -61,7 +64,7 @@ const updateBizOps = async (event, apiKey, systemCode, content) => {
 	if (!response.ok) {
 		throw httpError(
 			response.status,
-			`Attempt to access BIZ_OPS ${url} failed with ${
+			`Attempt to access BIZ_OPS ${url}${queryString} failed with ${
 				response.statusText
 			}`,
 		);

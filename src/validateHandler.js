@@ -6,7 +6,7 @@ const { createLambda } = require('./lib/lambda');
 const template = require('./templates/validate-page');
 const {
 	attemptParse,
-	// attemptScore,
+	attemptScore,
 	updateBizOps,
 } = require('./lib/external-apis');
 

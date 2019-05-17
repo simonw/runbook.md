@@ -44,19 +44,18 @@ const attemptScore = async (event, request) => {
 
 const updateBizOps = async (event, apiKey, systemCode, content) => {
 	const headers = {
-		api_key: apiKey,
 		'x-api-key': apiKey,
 		'client-id': 'biz-ops-runbook-md',
 		'content-type': 'application/json',
-		'client-user-id': event.clientUserId,
+		'client-user-id': event.s3oUsername,
 	};
 	const contentFields = Object.keys(content)
 		.map(name => name)
 		.join(',');
-	const queryString = `?relationshipAction=merge&lockFields=${contentFields}`;
+	const queryString = `?lockFields=${contentFields}`;
 	const url = `${process.env.BIZ_OPS_API_URL}/v2/node/System/${systemCode}`;
 	const options = {
-		method: 'POST',
+		method: 'PATCH',
 		headers,
 		body: JSON.stringify(content),
 	};

@@ -58,6 +58,7 @@ functions:
       - http:
           path: /ingest
           method: post
+          cors: true
   validate:
     description: Validate an runbook.md
     handler: dist/validateHandler.handler
@@ -69,6 +70,7 @@ functions:
       - http:
           path: /validate
           method: post
+          cors: true
 plugins:
   - serverless-plugin-aws-alerts
   - serverless-log-forwarding

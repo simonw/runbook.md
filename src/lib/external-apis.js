@@ -68,7 +68,7 @@ const updateBizOps = async (event, apiKey, systemCode, content) => {
 			}`,
 		);
 	}
-	return { response: response.json(), status: response.status };
+	return response.json();
 };
 
 module.exports = {

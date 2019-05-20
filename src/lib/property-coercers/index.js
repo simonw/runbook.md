@@ -33,9 +33,26 @@ function split(subdocument) {
 module.exports = {
 	/*
 	  Huge assumption being made here that the only thing that will ever care
-	  about `hasMany` is `String` types, which in our case includes Codes.
+	  about `hasMany` is `String` and `Subdocument` types, which in our case
+	  includes Codes.
 	*/
 	String(subdocument, { hasMany = false } = {}) {
+		if (hasMany) {
+			return {
+				valid: true,
+				value: split(subdocument).map(flattenNodeToPlainString),
+			};
+		}
+		return {
+			valid: true,
+			value: flattenNodeToPlainString(subdocument),
+		};
+	},
+	/*
+	  Subdocument is not a real biz-ops type. This is to separate strings (i.e.,
+	  urls and words) from Documents (i.e. paragraphs, sentences and documents)
+	*/
+	Subdocument(subdocument, { hasMany = false } = {}) {
 		if (hasMany) {
 			return {
 				valid: true,

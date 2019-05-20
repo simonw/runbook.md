@@ -10,10 +10,10 @@ const {
 	updateBizOps,
 } = require('./lib/external-apis');
 
-const responseHeaders = {
-	'Content-Type': 'application/json',
-	'Cache-Control': 'private, no-cache, no-store, must-revalidate, max-age=0',
-};
+// const responseHeaders = {
+// 	'Content-Type': 'application/json',
+// 	'Cache-Control': 'private, no-cache, no-store, must-revalidate, max-age=0',
+// };
 
 const displayForm = async event => {
 	logger.info(
@@ -32,9 +32,14 @@ const handleForm = async event => {
 	const jsonFormData = querystring.parse(formData);
 
 	const parseResult = await attemptParse(event, jsonFormData);
-	const validateResult = await attemptScore(event, parseResult.data);
+	let validationResult;
 	let writeResult = {};
-	if (jsonFormData.writeToBizOps) {
+	if (parseResult.errors) {
+		validationResult = {};
+	} else {
+		validationResult = await attemptScore(event, parseResult.data);
+	}
+	if (!parseResult.errors && jsonFormData.writeToBizOps === true) {
 		if (jsonFormData.bizOpsApiKey) {
 			writeResult = await updateBizOps(
 				event,
@@ -43,18 +48,38 @@ const handleForm = async event => {
 				parseResult.data,
 			);
 		} else {
-			writeResult = { BizOpsError: 'Please supply a Biz Ops API Key' };
+			writeResult = {
+				Written: false,
+				BizOpsError: 'Please supply a Biz Ops API Key',
+			};
 		}
 	} else {
 		writeResult = {
+			Written: false,
 			BizOpsUnchanged: 'The data has not been written to Biz Ops',
 		};
 	}
-	return {
-		statusCode: 200,
-		body: JSON.stringify({ parseResult, validateResult, writeResult }),
-		headers: responseHeaders,
-	};
+	return response.page(
+		template,
+		{
+			systemCode: jsonFormData.systemCode,
+			writeToBizOps: jsonFormData.writeToBizOps,
+			bizOpsApiKey: jsonFormData.bizOpsApiKey,
+			content: jsonFormData.content,
+			parseErrors: parseResult.errors,
+			parseData: parseResult.data,
+			validationErrors: validationResult.errorMessages,
+			validationData: parseResult.data,
+			updatedFields: writeResult,
+		},
+		event,
+	);
+	// );
+	// return {
+	// 	statusCode: 200,
+	// 	body: JSON.stringify({ parseResult, validationResult, writeResult }),
+	// 	headers: responseHeaders,
+	// };
 };
 
 const handler = async event => {

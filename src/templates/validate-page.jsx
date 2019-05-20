@@ -1,6 +1,29 @@
 const { h, Fragment } = require('hyperons');
 
-const ValidateForm = ({ systemCode, writeToBizOps, bizOpsApiKey, content }) => {
+const {
+	SystemCode,
+	WriteFlag,
+	ApiKey,
+	RunbookMd,
+} = require('./components/input-fields');
+
+const {
+	ParseSuccess,
+	ParseErrors,
+	ValidationErrors,
+	UpdatedFields,
+} = require('./components/output-fields');
+
+const ValidateForm = ({
+	systemCode,
+	writeToBizOps,
+	bizOpsApiKey,
+	content,
+	parseData = {},
+	parseErrors = [],
+	validationErrors = {},
+	updatedFields = {},
+}) => {
 	return (
 		<Fragment>
 			<h1 id="edit-form--title">Content Validator and Importer</h1>
@@ -8,115 +31,39 @@ const ValidateForm = ({ systemCode, writeToBizOps, bizOpsApiKey, content }) => {
 				<div className="o-grid-container">
 					<div className="o-grid-row o-forms--wide">
 						<div data-o-grid-colspan="3">
-							<div className="validation-code">
-								<label
-									className="o-forms__label"
-									htmlFor="systemCode"
-								>
-									The System Code
-								</label>
-								<description className="description-text o-forms__additional-info">
-									The code of the system to which the
-									RUNBOOK.MD is associated.
-								</description>
-								<input
-									type="text"
-									className="o-forms__text"
-									name="systemCode"
-									id="systemCode"
-									value={systemCode}
-								/>
-							</div>
+							<SystemCode systemCode={systemCode} />
 						</div>
 						<div data-o-grid-colspan="3">
-							<div className="validation-write">
-								<label
-									className="o-forms__label"
-									htmlFor="writeToBizOps"
-								>
-									Write to BizOps?
-								</label>
-								<description className="description-text o-forms__additional-info">
-									Choose Yes to have the results written into
-									biz-ops; default in No.
-								</description>
-								<select
-									name="writeToBizOps"
-									id="writeToBizOps"
-									className="o-forms__select"
-								>
-									<option
-										value={false}
-										selected={
-											writeToBizOps === false
-												? 'selected'
-												: null
-										}
-									>
-										No
-									</option>
-									<option
-										value
-										selected={
-											writeToBizOps === true
-												? 'selected'
-												: null
-										}
-									>
-										Yes
-									</option>
-								</select>
-							</div>
+							<WriteFlag writeToBizOps={writeToBizOps} />
 						</div>
 						<div data-o-grid-colspan="6">
-							<div className="validation-key">
-								<label
-									className="o-forms__label"
-									htmlFor="bizOpsApiKey"
-								>
-									Your Biz Ops API Key
-								</label>
-								<description className="description-text o-forms__additional-info">
-									The Api Key to be used to read/write to Biz
-									Ops.
-									<br />
-									<br />
-								</description>
-								<input
-									type="text"
-									className="o-forms__text"
-									name="bizOpsApiKey"
-									id="bizOpsApiKey"
-									value={bizOpsApiKey}
-								/>
-							</div>
+							<ApiKey bizOpsApiKey={bizOpsApiKey} />
 						</div>
 					</div>
 				</div>
 				<p />
-				<div className="validation-content o-forms o-forms--wide">
-					<label className="o-forms__label" htmlFor="content">
-						The RUNBOOK.MD Content
-					</label>
-					<description className="description-text o-forms__additional-info">
-						The text from RUNBOOK.MD.
-					</description>
-					<textarea
-						className="o-forms__textarea"
-						name="content"
-						id="content"
-						rows="20"
-					>
-						{content}
-					</textarea>
+				<div className="o-forms o-forms--wide">
+					<RunbookMd content={content} />
 				</div>
 				<p />
 				<button
 					className="o-buttons o-buttons--primary o-buttons--mono o-buttons--big"
 					type="submit"
 				>
-					Validate
+					Parse & Validate & Upload
 				</button>
+				{parseErrors.length ? (
+					<ParseErrors errors={parseErrors} />
+				) : null}
+				{Object.entries(validationErrors).length ? (
+					<ValidationErrors errors={validationErrors} />
+				) : null}
+				{Object.entries(parseData).length ? (
+					<ParseSuccess data={parseData} />
+				) : null}
+				{Object.entries(updatedFields).length ? (
+					<UpdatedFields data={updatedFields} />
+				) : null}
 			</form>
 		</Fragment>
 	);

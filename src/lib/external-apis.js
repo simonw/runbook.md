@@ -30,6 +30,7 @@ const attemptParse = async (event, request) =>
 		method: 'POST',
 		url: `${process.env.BASE_URL}/ingest`,
 		payload: request,
+		headers: { Cookie: event.headers.Cookie },
 	});
 
 const attemptScore = async (event, request) =>

@@ -18,6 +18,7 @@ provider:
     BASE_HOST: ${env:BASE_HOST}
     BASE_URL: ${env:BASE_URL}
     SCHEMA_BASE_URL: ${env:SCHEMA_BASE_URL}
+    SOS_URL: ${env:SOS_URL}
     AWS_ACCOUNT_ID: ${env:AWS_ACCOUNT_ID}
     CONSOLE_LOG_LEVEL: info
     ENVIRONMENT: ${env:ENVIRONMENT}

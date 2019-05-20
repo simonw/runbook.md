@@ -1,10 +1,14 @@
 const logger = require('@financial-times/lambda-logger');
 const httpError = require('http-errors');
-const nodeFetch = require('node-fetch');
 const querystring = require('qs');
 const response = require('./lib/response');
 const { createLambda } = require('./lib/lambda');
 const template = require('./templates/validate-page');
+const {
+	attemptParse,
+	attemptScore,
+	updateBizOps,
+} = require('./lib/external-apis');
 
 const responseHeaders = {
 	'Content-Type': 'application/json',
@@ -26,33 +30,29 @@ const handleForm = async event => {
 	);
 	const formData = event.body;
 	const jsonFormData = querystring.parse(formData);
-	const options = {
-		method: 'POST',
-		body: JSON.stringify(jsonFormData),
-		headers: { Cookie: event.headers.Cookie },
-	};
-	const fetchResponse = await nodeFetch(
-		`${process.env.BASE_URL}/ingest`,
-		options,
-	);
-	if (!fetchResponse.ok) {
-		throw httpError(
-			fetchResponse.status,
-			`Attempt to access ingest failed with ${fetchResponse.statusText}`,
-		);
+
+	const parseResult = await attemptParse(event, jsonFormData);
+	const validateResult = await attemptScore(event, parseResult.data);
+	let writeResult = {};
+	if (jsonFormData.writeToBizOps) {
+		if (jsonFormData.bizOpsApiKey) {
+			writeResult = await updateBizOps(
+				event,
+				jsonFormData.bizOpsApiKey,
+				jsonFormData.systemCode,
+				parseResult.data,
+			);
+		} else {
+			writeResult = { BizOpsError: 'Please supply a Biz Ops API Key' };
+		}
+	} else {
+		writeResult = {
+			BizOpsUnchanged: 'The data has not been written to Biz Ops',
+		};
 	}
-	logger.info(
-		{ event: 'POSTED to /ingest endpoint', options },
-		'Waiting for validation response',
-	);
-	const result = await fetchResponse.json();
-	logger.info(
-		{ event: 'Result from /ingest endpoint', result },
-		'Validation response',
-	);
 	return {
 		statusCode: 200,
-		body: JSON.stringify(result),
+		body: JSON.stringify({ parseResult, validateResult, writeResult }),
 		headers: responseHeaders,
 	};
 };

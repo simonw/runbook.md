@@ -58,16 +58,16 @@ functions:
       - http:
           path: /ingest
           method: post
-  validate:
-    description: Validate an runbook.md
-    handler: dist/validateHandler.handler
+  form:
+    description: GUI for driving ingestion of a runbook.md
+    handler: dist/formHandler.handler
     timeout: 30
     events:
       - http:
           path: /
           method: get
       - http:
-          path: /validate
+          path: /
           method: post
 plugins:
   - serverless-plugin-aws-alerts

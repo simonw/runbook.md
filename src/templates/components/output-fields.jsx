@@ -1,5 +1,22 @@
 const { h } = require('hyperons');
 
+const Message = ({ status, message }) => (
+	<div
+		className={`o-message o-message--alert ${
+			status === 200 ? 'o-message--success' : 'o-message--error'
+		}`}
+		data-o-component="o-message"
+	>
+		<div className="o-message__container">
+			<div className="o-message__content ">
+				<p />
+				<p className="o-message__content-main">{message}</p>
+				<p />
+			</div>
+		</div>
+	</div>
+);
+
 const UpdatedFields = ({ data }) => (
 	<div className="parsed-data">
 		<table
@@ -129,6 +146,7 @@ const ValidationErrors = ({ errors }) => (
 );
 
 module.exports = {
+	Message,
 	ParseSuccess,
 	ParseErrors,
 	UpdatedFields,

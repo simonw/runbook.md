@@ -8,6 +8,7 @@ const {
 } = require('./components/input-fields');
 
 const {
+	Message,
 	ParseSuccess,
 	ParseErrors,
 	ValidationErrors,
@@ -15,6 +16,8 @@ const {
 } = require('./components/output-fields');
 
 const ValidateForm = ({
+	status,
+	message,
 	systemCode,
 	writeToBizOps,
 	bizOpsApiKey,
@@ -26,8 +29,8 @@ const ValidateForm = ({
 }) => {
 	return (
 		<Fragment>
-			<h1 id="edit-form--title">Content Validator and Importer</h1>
-			<form action={`${process.env.BASE_URL}/validate`} method="POST">
+			<h2 id="edit-form--title">Parse, Validate and Import</h2>
+			<form action={`${process.env.BASE_URL}/`} method="POST">
 				<div className="o-grid-container">
 					<div className="o-grid-row o-forms--wide">
 						<div data-o-grid-colspan="3">
@@ -50,8 +53,9 @@ const ValidateForm = ({
 					className="o-buttons o-buttons--primary o-buttons--mono o-buttons--big"
 					type="submit"
 				>
-					Parse & Validate & Upload
+					Submit
 				</button>
+				{message ? <Message status={status} message={message} /> : null}
 				{parseErrors.length ? (
 					<ParseErrors errors={parseErrors} />
 				) : null}

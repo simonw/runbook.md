@@ -2,14 +2,21 @@ const logger = require('@financial-times/lambda-logger');
 const httpError = require('http-errors');
 const nodeFetch = require('node-fetch');
 
-const callExternalApi = async ({ name, method, url, payload, headers }) => {
+const callExternalApi = async ({
+	name,
+	method,
+	url,
+	payload,
+	headers,
+	expectedStatuses = [200],
+}) => {
 	const options = {
 		method,
 		body: JSON.stringify(payload),
 		headers,
 	};
 	const fetchResponse = await nodeFetch(url, options);
-	if (!fetchResponse.ok) {
+	if (!expectedStatuses.includes(fetchResponse.status)) {
 		throw httpError(
 			fetchResponse.status,
 			`Attempt to access ${name} ${url} ${options} failed with ${
@@ -21,19 +28,20 @@ const callExternalApi = async ({ name, method, url, payload, headers }) => {
 		{ event: `POSTED to ${url}`, options },
 		`Waiting for ${name} response`,
 	);
-	return fetchResponse.json();
+	return { status: fetchResponse.status, json: await fetchResponse.json() };
 };
 
-const attemptParse = async (event, request) =>
+const ingest = async (event, request) =>
 	callExternalApi({
-		name: 'RUNBOOK.MD parse',
+		name: 'RUNBOOK.MD ingest',
 		method: 'POST',
 		url: `${process.env.BASE_URL}/ingest`,
 		payload: request,
 		headers: { Cookie: event.headers.Cookie },
+		expectedStatuses: [200, 400, 403],
 	});
 
-const attemptScore = async (event, request) =>
+const validate = async (event, request) =>
 	callExternalApi({
 		name: 'SOS validate',
 		method: 'POST',
@@ -58,11 +66,12 @@ const updateBizOps = async (event, apiKey, systemCode, content) => {
 			'content-type': 'application/json',
 			'client-user-id': event.s3oUsername,
 		},
+		expectedStatuses: [200, 400, 403],
 	});
 };
 
 module.exports = {
-	attemptParse,
-	attemptScore,
+	ingest,
+	validate,
 	updateBizOps,
 };

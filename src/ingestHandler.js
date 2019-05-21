@@ -8,91 +8,89 @@ const responseHeaders = {
 	'Cache-Control': 'private, no-cache, no-store, must-revalidate, max-age=0',
 };
 
-const handler = async event => {
-	const userRequest = JSON.parse(event.body);
-	logger.info({ event: 'RUNBOOK_INGESTION', userRequest });
+const htmlResponse = (status, message, details) => ({
+	statusCode: status,
+	body: JSON.stringify({ message, ...details }),
+	headers: responseHeaders,
+});
+const badRequestError = (message, details) =>
+	htmlResponse(400, message, details);
+const success = (message, details) => htmlResponse(200, message, details);
+
+const ingestedDetails = (parseResult, validationResult, writeResult) => ({
+	...(parseResult && {
+		parseErrors: parseResult.errors,
+		parseData: parseResult.data,
+	}),
+	...(validationResult && {
+		validationErrors: validationResult.errorMessages,
+		validationData: validationResult.percentages,
+	}),
+	...(writeResult && { updatedFields: writeResult }),
+});
+
+const ingest = async (username, userRequest) => {
+	if (!userRequest.systemCode) {
+		return badRequestError('Please supply a systemCode');
+	}
+	if (!userRequest.content) {
+		return badRequestError('Please supply RUNBOOK.MD content');
+	}
 
 	const parseResult = await runbookMd.parseRunbookString(userRequest.content);
 	if (parseResult.errors.length) {
-		return {
-			statusCode: 400,
-			body: JSON.stringify({
-				message: 'Parse Failures. Please correct and resubmit',
-				parseErrors: parseResult.errors,
-				parseData: parseResult.data,
-			}),
-			headers: responseHeaders,
-		};
+		return badRequestError(
+			'Parse Failures. Please correct and resubmit',
+			ingestedDetails(parseResult),
+		);
 	}
 
 	const { status: validationStatus, json: validationResult } = await validate(
-		event,
 		parseResult.data,
 	);
 	// if (validationResult.errorMessages) {
-	// 	return {
-	// 		statusCode: validationStatus,
-	// 		body: JSON.stringify({
-	// 			message: 'Validation Failures. Please correct and resubmit',
-	// 			parseErrors: parseResult.errors,
-	// 			parseData: parseResult.data,
-	// 			validationErrors: validationResult.errorMessages,
-	// 			validationData: validationResult.percentages,
-	// 		}),
-	// 		headers: responseHeaders,
-	// 	};
+	// 	return htmlResponse(
+	// 		validationStatus,
+	// 		'Validation Failures. Please correct and resubmit',
+	// 		ingestedDetails(parseResult, validationResult),
+	// 	);
 	// }
-	if (userRequest.writeToBizOps === false) {
-		return {
-			statusCode: 200,
-			body: JSON.stringify({
-				message:
-					'Parse & Validation Complete; Biz Ops Was NOT Updated at your request',
-				parseErrors: parseResult.errors,
-				parseData: parseResult.data,
-				validationErrors: validationResult.errorMessages,
-				validationData: validationResult.percentages,
-			}),
-			headers: responseHeaders,
-		};
+	if (!userRequest.writeToBizOps || userRequest.writeToBizOps === false) {
+		return success(
+			'Parse & Validation Complete; Biz Ops Was NOT Updated at your request',
+			ingestedDetails(parseResult, validationResult),
+		);
 	}
 
 	if (!userRequest.bizOpsApiKey) {
-		return {
-			statusCode: 400,
-			body: JSON.stringify({
-				message:
-					'Unable to update Biz Ops. No API key was been provided',
-				parseErrors: parseResult.errors,
-				parseData: parseResult.data,
-				validationErrors: validationResult.errorMessages,
-				validationData: validationResult.percentages,
-			}),
-			headers: responseHeaders,
-		};
+		return badRequestError(
+			'Unable to update Biz Ops. No API key was been provided',
+			ingestedDetails(parseResult, validationResult),
+		);
 	}
 
 	const { status: writeStatus, json: writeResult } = await updateBizOps(
-		event,
+		username,
 		userRequest.bizOpsApiKey,
 		userRequest.systemCode,
 		parseResult.data,
 	);
-	return {
-		statusCode: writeStatus,
-		body: JSON.stringify({
-			message:
-				writeStatus === 200
-					? 'Biz Ops has been updated'
-					: 'Biz Ops update failed',
-			parseErrors: parseResult.errors,
-			parseData: parseResult.data,
-			validationErrors: validationResult.errorMessages,
-			validationData: validationResult.percentages,
-			updatedFields: writeResult,
-		}),
-		headers: responseHeaders,
-	};
+	return htmlResponse(
+		writeStatus,
+		writeStatus === 200
+			? 'Biz Ops has been updated'
+			: 'Biz Ops update failed',
+		ingestedDetails(parseResult, validationResult, writeResult),
+	);
 };
 
-exports.handler = createLambda(handler);
+const handler = async event => {
+	const userRequest = JSON.parse(event.body);
+	logger.info({ event: 'RUNBOOK_INGESTION', userRequest });
+	return ingest(event.s3oUsername, userRequest);
+};
+
+module.exports = {
+	handler: createLambda(handler),
+	ingest,
+};

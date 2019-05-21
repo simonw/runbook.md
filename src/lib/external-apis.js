@@ -41,7 +41,7 @@ const ingest = async (event, request) =>
 		expectedStatuses: [200, 400, 403],
 	});
 
-const validate = async (event, request) =>
+const validate = async request =>
 	callExternalApi({
 		name: 'SOS validate',
 		method: 'POST',
@@ -49,7 +49,7 @@ const validate = async (event, request) =>
 		payload: request,
 	});
 
-const updateBizOps = async (event, apiKey, systemCode, content) => {
+const updateBizOps = async (username, apiKey, systemCode, content) => {
 	const queryString = `?lockFields=${Object.keys(content)
 		.map(name => name)
 		.join(',')}`;
@@ -64,7 +64,7 @@ const updateBizOps = async (event, apiKey, systemCode, content) => {
 			'x-api-key': apiKey,
 			'client-id': 'biz-ops-runbook-md',
 			'content-type': 'application/json',
-			'client-user-id': event.s3oUsername,
+			'client-user-id': username,
 		},
 		expectedStatuses: [200, 400, 403],
 	});

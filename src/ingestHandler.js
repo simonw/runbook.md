@@ -8,14 +8,17 @@ const responseHeaders = {
 	'Cache-Control': 'private, no-cache, no-store, must-revalidate, max-age=0',
 };
 
-const htmlResponse = (status, message, details) => ({
-	statusCode: status,
-	body: JSON.stringify({ message, ...details }),
-	headers: responseHeaders,
-});
-const badRequestError = (message, details) =>
-	htmlResponse(400, message, details);
-const success = (message, details) => htmlResponse(200, message, details);
+const htmlResponse = ({ status, message, details }) => {
+	return {
+		statusCode: status,
+		body: JSON.stringify({ message, ...details }),
+		headers: responseHeaders,
+	};
+};
+const badRequestError = ({ message, details }) =>
+	htmlResponse({ status: 400, message, details });
+const success = ({ message, details }) =>
+	htmlResponse({ status: 200, message, details });
 
 const ingestedDetails = (parseResult, validationResult, writeResult) => ({
 	...(parseResult && {
@@ -31,33 +34,34 @@ const ingestedDetails = (parseResult, validationResult, writeResult) => ({
 
 const ingest = async (username, userRequest) => {
 	if (!userRequest.systemCode) {
-		return badRequestError('Please supply a systemCode');
+		return badRequestError({ message: 'Please supply a systemCode' });
 	}
 	if (!userRequest.content) {
-		return badRequestError('Please supply RUNBOOK.MD content');
+		return badRequestError({ message: 'Please supply RUNBOOK.MD content' });
 	}
 
 	const parseResult = await runbookMd.parseRunbookString(userRequest.content);
 	if (parseResult.errors.length) {
-		return badRequestError(
-			'Parse Failures. Please correct and resubmit',
-			ingestedDetails(parseResult),
-		);
+		return badRequestError({
+			message: 'Parse Failures. Please correct and resubmit',
+			details: ingestedDetails(parseResult),
+		});
 	}
 
 	const { json: validationResult } = await validate(parseResult.data);
 	if (!userRequest.writeToBizOps || userRequest.writeToBizOps === false) {
-		return success(
-			'Parse & Validation Complete; Biz Ops Was NOT Updated at your request',
-			ingestedDetails(parseResult, validationResult),
-		);
+		return success({
+			message:
+				'Parse & Validation Complete. Biz Ops Was NOT Updated as you did not enable the writeToBizOps flag.',
+			details: ingestedDetails(parseResult, validationResult),
+		});
 	}
 
 	if (!userRequest.bizOpsApiKey) {
-		return badRequestError(
-			'Unable to update Biz Ops. No API key was been provided',
-			ingestedDetails(parseResult, validationResult),
-		);
+		return badRequestError({
+			message: 'Unable to update Biz Ops. No API key was been provided',
+			details: ingestedDetails(parseResult, validationResult),
+		});
 	}
 
 	const { status: writeStatus, json: writeResult } = await updateBizOps(
@@ -66,13 +70,16 @@ const ingest = async (username, userRequest) => {
 		userRequest.systemCode,
 		parseResult.data,
 	);
-	return htmlResponse(
-		writeStatus,
-		writeStatus === 200
-			? 'Biz Ops has been updated'
-			: 'Biz Ops update failed',
-		ingestedDetails(parseResult, validationResult, writeResult),
-	);
+	return htmlResponse({
+		status: writeStatus,
+		message:
+			writeStatus === 200
+				? `Biz Ops has been updated.`
+				: `Biz Ops update failed with ${writeStatus}: ${JSON.stringify(
+						writeResult,
+				  )}`,
+		details: ingestedDetails(parseResult, validationResult, writeResult),
+	});
 };
 
 const handler = async event => {

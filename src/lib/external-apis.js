@@ -17,6 +17,10 @@ const callExternalApi = async ({
 	};
 	const fetchResponse = await nodeFetch(url, options);
 	if (!expectedStatuses.includes(fetchResponse.status)) {
+		logger.error(
+			{ event: `Attempt to ${method} to ${url}`, options },
+			`Failed with ${fetchResponse.status}:${fetchResponse}`,
+		);
 		throw httpError(
 			fetchResponse.status,
 			`Attempt to access ${name} ${url} ${options} failed with ${
@@ -50,7 +54,9 @@ const validate = async request =>
 	});
 
 const updateBizOps = async (username, apiKey, systemCode, content) => {
-	const queryString = `?lockFields=${Object.keys(content)
+	const queryString = `?relationshipAction=replace&lockFields=${Object.keys(
+		content,
+	)
 		.map(name => name)
 		.join(',')}`;
 	return callExternalApi({

@@ -11,7 +11,7 @@ test('Ingest is available and runs when all parameters are provided', async () =
 	expect(result.statusCode).toBe(200);
 	const body = JSON.parse(result.body);
 	expect(body.message).toBe(
-		'Parse & Validation Complete; Biz Ops Was NOT Updated at your request',
+		'Parse & Validation Complete. Biz Ops Was NOT Updated as you did not enable the writeToBizOps flag.',
 	);
 	expect(body.parseData).toHaveProperty('name', 'this is a name');
 });
@@ -38,7 +38,7 @@ test('Ingest does not fail when writeToBizOps field is omitted since the default
 	expect(result.statusCode).toBe(200);
 	const body = JSON.parse(result.body);
 	expect(body.message).toBe(
-		'Parse & Validation Complete; Biz Ops Was NOT Updated at your request',
+		'Parse & Validation Complete. Biz Ops Was NOT Updated as you did not enable the writeToBizOps flag.',
 	);
 });
 
@@ -66,7 +66,7 @@ test('Ingest does not fail when api key field is omitted if writeToBizOps is fal
 	expect(result.statusCode).toBe(200);
 	const body = JSON.parse(result.body);
 	expect(body.message).toBe(
-		'Parse & Validation Complete; Biz Ops Was NOT Updated at your request',
+		'Parse & Validation Complete. Biz Ops Was NOT Updated as you did not enable the writeToBizOps flag.',
 	);
 });
 

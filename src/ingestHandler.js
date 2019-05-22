@@ -52,7 +52,7 @@ const ingest = async (username, userRequest) => {
 	if (!userRequest.writeToBizOps || userRequest.writeToBizOps === false) {
 		return success({
 			message:
-				'Parse & Validation Complete; Biz Ops Was NOT Updated at your request',
+				'Parse & Validation Complete. Biz Ops Was NOT Updated as you did not enable the writeToBizOps flag.',
 			details: ingestedDetails(parseResult, validationResult),
 		});
 	}

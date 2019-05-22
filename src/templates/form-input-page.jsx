@@ -66,7 +66,9 @@ const ValidateForm = ({
 						}
 						linkUrl={
 							status === 200
-								? `https://biz-ops-test.in.ft.com/System/${systemCode}`
+								? `${
+										process.env.BIZ_OPS_URL
+								  }/System/${systemCode}`
 								: undefined
 						}
 					/>

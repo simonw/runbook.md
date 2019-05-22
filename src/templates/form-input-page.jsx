@@ -60,12 +60,12 @@ const ValidateForm = ({
 						status={status}
 						message={message}
 						linkText={
-							status === 200
+							status === 200 && writeToBizOps
 								? 'View updated Biz Ops record'
 								: undefined
 						}
 						linkUrl={
-							status === 200
+							status === 200 && writeToBizOps
 								? `${
 										process.env.BIZ_OPS_URL
 								  }/System/${systemCode}`

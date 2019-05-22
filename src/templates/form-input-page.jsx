@@ -55,7 +55,22 @@ const ValidateForm = ({
 				>
 					Submit
 				</button>
-				{message ? <Message status={status} message={message} /> : null}
+				{message ? (
+					<Message
+						status={status}
+						message={message}
+						linkText={
+							status === 200
+								? 'View updated Biz Ops record'
+								: undefined
+						}
+						linkUrl={
+							status === 200
+								? `https://biz-ops-test.in.ft.com/System/${systemCode}`
+								: undefined
+						}
+					/>
+				) : null}
 				{parseErrors.length ? (
 					<ParseErrors errors={parseErrors} />
 				) : null}

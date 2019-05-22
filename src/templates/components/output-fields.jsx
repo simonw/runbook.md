@@ -1,6 +1,6 @@
 const { h } = require('hyperons');
 
-const Message = ({ status, message }) => (
+const Message = ({ status, message, linkText, linkUrl }) => (
 	<div
 		className={`o-message o-message--alert ${
 			status === 200 ? 'o-message--success' : 'o-message--error'
@@ -9,9 +9,15 @@ const Message = ({ status, message }) => (
 	>
 		<div className="o-message__container">
 			<div className="o-message__content ">
-				<p />
 				<p className="o-message__content-main">{message}</p>
-				<p />
+				<div className="o-message__actions">
+					<a
+						href={`${linkUrl}`}
+						className="o-message__actions__secondary"
+					>
+						{linkText}
+					</a>
+				</div>
 			</div>
 		</div>
 	</div>

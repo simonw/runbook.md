@@ -45,16 +45,7 @@ const ingest = async (username, userRequest) => {
 		);
 	}
 
-	const { status: validationStatus, json: validationResult } = await validate(
-		parseResult.data,
-	);
-	// if (validationResult.errorMessages) {
-	// 	return htmlResponse(
-	// 		validationStatus,
-	// 		'Validation Failures. Please correct and resubmit',
-	// 		ingestedDetails(parseResult, validationResult),
-	// 	);
-	// }
+	const { json: validationResult } = await validate(parseResult.data);
 	if (!userRequest.writeToBizOps || userRequest.writeToBizOps === false) {
 		return success(
 			'Parse & Validation Complete; Biz Ops Was NOT Updated at your request',

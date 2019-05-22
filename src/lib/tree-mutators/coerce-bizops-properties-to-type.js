@@ -5,6 +5,26 @@ const normalizePropertyKey = require('../normalize-property-key');
 const flattenNodeToPlainString = require('../flatten-node-to-plain-string');
 const setPropertyNodeValue = require('../set-property-node-value');
 
+function getCoercer({ isNested, primitiveType, propertyType }) {
+	const subdocumentPropertyTypes = new Set([
+		'Document',
+		'Paragraph',
+		'Sentence',
+	]);
+	const isSubdocument = subdocumentPropertyTypes.has(propertyType);
+	const isString = isNested || (primitiveType === 'String' && !isSubdocument);
+
+	if (isNested || isString) {
+		return propertyCoercers.String;
+	}
+
+	if (isSubdocument) {
+		return propertyCoercers.Subdocument;
+	}
+
+	return propertyCoercers[primitiveType];
+}
+
 module.exports = function coerceBizopsPropertiesToType({
 	typeNames,
 	systemProperties,
@@ -12,20 +32,24 @@ module.exports = function coerceBizopsPropertiesToType({
 	enums,
 }) {
 	function mutate(node) {
+		const { propertyType } = node;
 		const { hasMany } = systemProperties[node.key];
+
 		// If we come across a main type (such as System), then in the markdown
 		// we will specify only a code
-		if (typeNames.has(node.propertyType)) {
-			node.propertyType = 'Code';
-		}
+		const isNested = typeNames.has(node.propertyType);
 
-		// If the propertyType is one of the primitive types, coerce it
-		if (node.propertyType in primitiveTypesMap) {
+		// If the propertyType is nested, or one of the primitive types, coerce it
+		if (propertyType in primitiveTypesMap || isNested) {
+			const [subdocument] = node.children;
+
 			const primitiveType = primitiveTypesMap[node.propertyType];
 
-			const coercer = propertyCoercers[primitiveType];
-
-			const [subdocument] = node.children;
+			const coercer = getCoercer({
+				isNested,
+				primitiveType,
+				propertyType,
+			});
 
 			const coercion = coercer(subdocument, { hasMany });
 
@@ -42,12 +66,12 @@ module.exports = function coerceBizopsPropertiesToType({
 		}
 
 		// If it's an enum, make sure it's a valid value for that enum
-		if (node.propertyType in enums) {
+		if (propertyType in enums) {
 			const flattenedContent = normalizePropertyKey(
 				flattenNodeToPlainString(node.children[0]),
 			);
 
-			const enumName = node.propertyType;
+			const enumName = propertyType;
 
 			const validValues = Object.values(enums[enumName]);
 

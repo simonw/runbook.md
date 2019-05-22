@@ -60,6 +60,19 @@ test('string types are coerced to string', async () => {
 	expect(typeof data.primaryURL).toBe('string');
 });
 
+// Before this test, we had links coming out wrapped in triangle brackets
+test('urls should stay urls', async () => {
+	const { data } = await runbookmd.parseRunbookString(here`
+		# name
+
+		## primary url
+
+		https://snoot.club
+	`);
+
+	expect(data.primaryURL).toBe('https://snoot.club');
+});
+
 test('nested fields are coerced to string (the code)', async () => {
 	const { data } = await runbookmd.parseRunbookString(here`
 		# name

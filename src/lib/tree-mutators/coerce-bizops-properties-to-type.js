@@ -80,7 +80,7 @@ module.exports = function coerceBizopsPropertiesToType({
 			});
 
 			if (validValue) {
-				setPropertyNodeValue(node, validValue.value);
+				setPropertyNodeValue(node, validValue);
 			} else {
 				convertNodeToProblem({
 					node,

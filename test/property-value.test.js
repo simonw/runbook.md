@@ -60,17 +60,42 @@ test('string types are coerced to string', async () => {
 	expect(typeof data.primaryURL).toBe('string');
 });
 
+test('enums types correctly return their value', async () => {
+	const { data } = await runbookmd.parseRunbookString(here`
+		# name
+
+		## Service tier
+		platinum
+
+	`);
+
+	expect(data.serviceTier).toBe('Platinum');
+});
+
+test('enums types with incorrect values produce error', async () => {
+	const { data, errors } = await runbookmd.parseRunbookString(here`
+		# name
+
+		## Service tier
+
+		Cardboard
+	`);
+
+	expect(data.serviceTier).toBe(undefined);
+	expect(errors.length).toBe(1);
+});
+
 // Before this test, we had links coming out wrapped in triangle brackets
 test('urls should stay urls', async () => {
 	const { data } = await runbookmd.parseRunbookString(here`
 		# name
 
 		## primary url
-
 		https://snoot.club
 	`);
 
 	expect(data.primaryURL).toBe('https://snoot.club');
+	expect(typeof data.primaryURL).toBe('string');
 });
 
 test('nested fields are coerced to string (the code)', async () => {

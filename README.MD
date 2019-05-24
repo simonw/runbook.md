@@ -4,5 +4,5 @@ This utility offers the user the opportunity to create and upload a RUNBOOK.MD f
 
 In this **BETA** implementation we offer both a GUI and a /ingest endpoint (to which you can POST RUNBOOK.MD) content
 
-A sample of the format/content of the RUNBOOK.MD file can be seen [EXAMPLE.MD](here)
+A sample of the format/content of the RUNBOOK.MD file can be seen (./EXAMPLE.MD)[here]
 

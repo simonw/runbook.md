@@ -43,13 +43,56 @@ No
 * parent-system-two
 * parent-system-three
 
-## failover
+## failoverArchitectureType
+ActiveActive
+## failoverProcessType
+FullyAutomated
+## failbackProcessType
+PartiallyAutomated
+## failoverDetails
+Please include some text, with paragraphs, to explain how the system is failed over and how to fail back.
+Failover:
+* Step 1
+* Step 2
+* Step 3
+Failback:
+- Step 1
+- Step 2
+- Step 3.
 
-## dataRecovery
+## dataRecoveryProcessType
+Manual
+## dataRecoveryDetails
+Please include some text, with paragraphs, to explain how the system's data is restored after failure.
+Restore:
+* Step 1
+* Step 2
+* Step 3
 
-## release
 
-## keyManagement
+## releaseProcessType
+FullyAutomated
+## rollbackProcessType
+Manual
+## releaseDetails
+Please include some text, with paragraphs, to explain how the system is released over and how to roll back.
+Release:
+* Step 1
+* Step 2
+* Step 3
+Rollback:
+- Step 1
+- Step 2
+- Step 3.
+
+## keyManagementProcessType
+PartiallyAutomated
+## keyManagementProcess
+Please include some text, with paragraphs, to explain how the system's keys are rotated.
+Key Rotation:
+* Step 1
+* Step 2
+* Step 3
 
 ## monitoring
 

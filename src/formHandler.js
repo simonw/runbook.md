@@ -1,17 +1,24 @@
 const logger = require('@financial-times/lambda-logger');
 const httpError = require('http-errors');
 const querystring = require('qs');
+const fs = require('fs');
+const path = require('path');
 const response = require('./lib/response');
 const { createLambda } = require('./lib/lambda');
 const template = require('./templates/form-input-page');
 const { ingest } = require('./lib/external-apis');
+
+const sampleRunbook = fs.readFileSync(
+	path.resolve(__dirname, '../EXAMPLE.MD'),
+	'utf8',
+);
 
 const displayForm = async event => {
 	logger.info(
 		{ event: 'GET RUNBOOK-MD INGEST FORM', params: event },
 		'Request for runbook.md form',
 	);
-	return response.page(template, {}, event);
+	return response.page(template, { content: sampleRunbook }, event);
 };
 
 const handleForm = async event => {

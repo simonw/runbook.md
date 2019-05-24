@@ -64,10 +64,10 @@ const ApiKey = ({ bizOpsApiKey }) => (
 	</div>
 );
 
-const RunbookMd = ({ content }) => (
+const RunbookMd = ({ exampleContent, content }) => (
 	<div className="validation-content">
 		<label className="o-forms__label" htmlFor="content">
-			The RUNBOOK.MD Content
+			The RUNBOOK.MD Content.
 		</label>
 		<description className="description-text o-forms__additional-info">
 			The text from RUNBOOK.MD.
@@ -77,6 +77,7 @@ const RunbookMd = ({ content }) => (
 			name="content"
 			id="content"
 			rows="20"
+			placeholder={exampleContent}
 		>
 			{content}
 		</textarea>

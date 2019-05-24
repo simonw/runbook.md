@@ -21,6 +21,7 @@ const ValidateForm = ({
 	systemCode,
 	writeToBizOps,
 	bizOpsApiKey,
+	exampleContent,
 	content,
 	parseData = {},
 	parseErrors = [],
@@ -46,7 +47,10 @@ const ValidateForm = ({
 				</div>
 				<p />
 				<div className="o-forms o-forms--wide">
-					<RunbookMd content={content} />
+					<RunbookMd
+						exampleContent={exampleContent}
+						content={content}
+					/>
 				</div>
 				<p />
 				<button

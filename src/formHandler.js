@@ -18,7 +18,7 @@ const displayForm = async event => {
 		{ event: 'GET RUNBOOK-MD INGEST FORM', params: event },
 		'Request for runbook.md form',
 	);
-	return response.page(template, { content: sampleRunbook }, event);
+	return response.page(template, { exampleContent: sampleRunbook }, event);
 };
 
 const handleForm = async event => {

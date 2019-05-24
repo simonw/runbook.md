@@ -37,7 +37,7 @@ const callExternalApi = async ({
 
 const ingest = async (event, request) =>
 	callExternalApi({
-		name: 'RUNBOOK.MD ingest',
+		name: 'RUNBOOK.md ingest',
 		method: 'POST',
 		url: `${process.env.BASE_URL}/ingest`,
 		payload: request,

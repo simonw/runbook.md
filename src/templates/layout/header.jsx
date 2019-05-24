@@ -37,7 +37,7 @@ const Header = () => {
 					<div className="o-header-services__logo" />
 					<div className="o-header-services__title">
 						<a className="o-header-services__product-name" href="/">
-							RUNBOOK.MD
+							RUNBOOK.md
 						</a>{' '}
 						<small>
 							powered by{' '}

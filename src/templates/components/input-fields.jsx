@@ -6,7 +6,7 @@ const SystemCode = ({ systemCode }) => (
 			The System Code
 		</label>
 		<description className="description-text o-forms__additional-info">
-			The code of the system to which the RUNBOOK.MD is associated.
+			The code of the system to which the RUNBOOK.md is associated.
 		</description>
 		<input
 			type="text"
@@ -67,10 +67,10 @@ const ApiKey = ({ bizOpsApiKey }) => (
 const RunbookMd = ({ exampleContent, content }) => (
 	<div className="validation-content">
 		<label className="o-forms__label" htmlFor="content">
-			The RUNBOOK.MD Content.
+			The RUNBOOK.md Content.
 		</label>
 		<description className="description-text o-forms__additional-info">
-			The text from RUNBOOK.MD.
+			The text from RUNBOOK.md.
 		</description>
 		<textarea
 			className="o-forms__textarea"

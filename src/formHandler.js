@@ -9,13 +9,13 @@ const template = require('./templates/form-input-page');
 const { ingest } = require('./lib/external-apis');
 
 const sampleRunbook = fs.readFileSync(
-	path.resolve(__dirname, '../EXAMPLE.MD'),
+	path.resolve(__dirname, '../EXAMPLE.md'),
 	'utf8',
 );
 
 const displayForm = async event => {
 	logger.info(
-		{ event: 'GET RUNBOOK-MD INGEST FORM', params: event },
+		{ event: 'GET RUNBOOK-md INGEST FORM', params: event },
 		'Request for runbook.md form',
 	);
 	return response.page(template, { exampleContent: sampleRunbook }, event);
@@ -23,7 +23,7 @@ const displayForm = async event => {
 
 const handleForm = async event => {
 	logger.info(
-		{ event: 'Received RUNBOOK-MD INGEST FORM', params: event },
+		{ event: 'Received RUNBOOK-md INGEST FORM', params: event },
 		'Result of runbook.md form',
 	);
 	const formData = event.body;

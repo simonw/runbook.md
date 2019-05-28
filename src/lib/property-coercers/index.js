@@ -21,7 +21,8 @@ function split(subdocument) {
 	if (items.length) {
 		return items;
 	}
-	return [subdocument];
+
+	return [];
 }
 
 /*
@@ -37,16 +38,39 @@ module.exports = {
 	  includes Codes.
 	*/
 	String(subdocument, { hasMany = false } = {}) {
-		if (hasMany) {
+		const items = split(subdocument);
+
+		// Expecting a list, got a list
+		if (hasMany && items.length) {
 			return {
 				valid: true,
-				value: split(subdocument).map(flattenNodeToPlainString),
+				value: items.map(flattenNodeToPlainString),
 			};
 		}
-		return {
-			valid: true,
-			value: flattenNodeToPlainString(subdocument),
-		};
+
+		// Expecting a list, didn't get a list'
+		if (hasMany && !items.length) {
+			return {
+				valid: false,
+				value: "expected a list, but didn't get any bulleted items",
+			};
+		}
+
+		// Not expecting a list, didn't get a list'
+		if (!hasMany && !items.length) {
+			return {
+				valid: true,
+				value: flattenNodeToPlainString(subdocument),
+			};
+		}
+
+		// Not expecting a list, but got a list
+		if (!hasMany && items.length) {
+			return {
+				valid: false,
+				value: 'expected a single item, but got a bulleted list',
+			};
+		}
 	},
 	/*
 	  Subdocument is not a real biz-ops type. This is to separate strings (i.e.,

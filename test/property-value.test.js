@@ -110,8 +110,8 @@ test('nested fields are coerced to string (the code)', async () => {
 	expect(data.technicalOwner).toBe('chee.rabbits');
 });
 
-test('properties with hasMany are coerced to arrays', async () => {
-	const { data } = await runbookmd.parseRunbookString(here`
+test('properties with hasMany turn bulleted lists into arrays', async () => {
+	const { data, errors } = await runbookmd.parseRunbookString(here`
 		# name
 
 		## known about by
@@ -120,7 +120,7 @@ test('properties with hasMany are coerced to arrays', async () => {
 
 		## dependencies
 
-		ft-app-fruitcake
+		* ft-app-fruitcake
 
 		## dependents
 
@@ -128,9 +128,34 @@ test('properties with hasMany are coerced to arrays', async () => {
 		* apple-quicktime
 	`);
 
+	expect(errors).toHaveLength(0);
 	expect(data.knownAboutBy).toEqual(['chee.rabbits']);
 	expect(data.dependencies).toEqual(['ft-app-fruitcake']);
 	expect(data.dependents).toEqual(['ft-app-fruitcake', 'apple-quicktime']);
+});
+
+test('properties with hasMany must be bulleted lists', async () => {
+	const { errors } = await runbookmd.parseRunbookString(here`
+		# name
+
+		## known about by
+
+		chee.rabbits
+	`);
+
+	expect(errors).toHaveLength(1);
+});
+
+test('properties without hasMany must not be bulleted lists', async () => {
+	const { errors } = await runbookmd.parseRunbookString(here`
+		# name
+
+		## primary url
+
+		* https://ft.com
+	`);
+
+	expect(errors).toHaveLength(1);
 });
 
 test('subdocuments have their headers reduced two levels', async () => {

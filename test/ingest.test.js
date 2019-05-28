@@ -79,5 +79,5 @@ test('Ingest fails when content field is omitted', async () => {
 	const result = await ingest('dummyUser', request);
 	expect(result.statusCode).toBe(400);
 	const body = JSON.parse(result.body);
-	expect(body.message).toBe('Please supply RUNBOOK.MD content');
+	expect(body.message).toBe('Please supply RUNBOOK.md content');
 });

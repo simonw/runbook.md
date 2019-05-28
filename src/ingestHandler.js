@@ -37,7 +37,7 @@ const ingest = async (username, userRequest) => {
 		return badRequestError({ message: 'Please supply a systemCode' });
 	}
 	if (!userRequest.content) {
-		return badRequestError({ message: 'Please supply RUNBOOK.MD content' });
+		return badRequestError({ message: 'Please supply RUNBOOK.md content' });
 	}
 
 	const parseResult = await runbookMd.parseRunbookString(userRequest.content);

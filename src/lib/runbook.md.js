@@ -1,6 +1,3 @@
-const lint = require('remark-lint');
-const noDuplicateHeadings = require('remark-lint-no-duplicate-headings-in-section');
-const noMultipleTitles = require('remark-lint-no-multiple-toplevel-headings');
 const remarkParse = require('remark-parse');
 const createStream = require('unified-stream');
 const unified = require('unified');
@@ -23,9 +20,6 @@ async function runbookMd() {
 
 	return unified()
 		.use(remarkParse)
-		.use(lint)
-		.use(noDuplicateHeadings)
-		.use(noMultipleTitles)
 		.use(createBizopsNameNode)
 		.use(createBizopsPropertyNodes)
 		.use(createBizopsDescriptionNode)

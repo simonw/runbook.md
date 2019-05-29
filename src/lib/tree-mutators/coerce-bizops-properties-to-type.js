@@ -3,7 +3,7 @@ const propertyCoercers = require('../property-coercers');
 const convertNodeToProblem = require('./convert-node-to-problem');
 const normalizePropertyKey = require('../normalize-property-key');
 const flattenNodeToPlainString = require('../flatten-node-to-plain-string');
-const setPropertyNodeValue = require('../set-property-node-value');
+const setPropertyNodeValue = require('./set-property-node-value');
 
 function getCoercer({ isNested, primitiveType, propertyType }) {
 	const subdocumentPropertyTypes = new Set([

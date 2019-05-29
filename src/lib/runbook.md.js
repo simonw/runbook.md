@@ -7,6 +7,7 @@ const createBizopsDescriptionNode = require('./tree-mutators/create-bizops-descr
 const createBizopsPropertyNodes = require('./tree-mutators/create-bizops-property-nodes');
 const setBizopsPropertyNames = require('./tree-mutators/set-bizops-property-names');
 const coerceBizopsPropertiesToType = require('./tree-mutators/coerce-bizops-properties-to-type');
+const validateBizopsProperties = require('./tree-mutators/validate-bizops-properties');
 const stringifyBoast = require('./unist-stringifiers/stringify-boast');
 
 async function runbookMd() {
@@ -17,6 +18,10 @@ async function runbookMd() {
 	const system = schema.getTypes().find(type => type.name === 'System');
 
 	const typeNames = new Set(types.map(type => type.name));
+
+	const validateProperty = (key, value) => {
+		return schema.validateProperty('System', key, value);
+	};
 
 	return unified()
 		.use(remarkParse)
@@ -31,6 +36,9 @@ async function runbookMd() {
 			typeNames,
 			primitiveTypesMap: schema.primitiveTypesMap,
 			enums: schema.getEnums(),
+		})
+		.use(validateBizopsProperties, {
+			validateProperty,
 		})
 		.use(stringifyBoast);
 }

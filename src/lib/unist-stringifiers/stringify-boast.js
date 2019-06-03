@@ -2,7 +2,7 @@ const os = require('os');
 const visit = require('unist-util-visit-parents');
 const { selectAll } = require('unist-util-select');
 const renderSubdocument = require('../render-subdocument');
-const convertProblemToErrorMessage = require('../convert-problem-node-to-error-message');
+const convertProblemToError = require('../convert-problem-node-to-error');
 
 const stringifyJson = jsonable => JSON.stringify(jsonable, null, '\t') + os.EOL;
 
@@ -23,7 +23,7 @@ module.exports = function stringifyBoast() {
 		});
 
 		const problems = selectAll('problem', root);
-		const errors = problems.map(convertProblemToErrorMessage);
+		const errors = problems.map(convertProblemToError);
 
 		return stringifyJson({ data, errors });
 	};

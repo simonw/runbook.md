@@ -103,12 +103,16 @@ const ParseErrors = ({ errors }) => (
 					<th scope="col" role="columnheader">
 						Message
 					</th>
+					<th scope="col" role="columnheader">
+						Line
+					</th>
 				</tr>
 			</thead>
 			<tbody>
-				{errors.map(message => (
+				{errors.map(error => (
 					<tr>
-						<td>{message}</td>
+						<td>{error.message}</td>
+						<td>{error.line}</td>
 					</tr>
 				))}
 			</tbody>

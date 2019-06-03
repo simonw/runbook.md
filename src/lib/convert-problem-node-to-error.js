@@ -6,9 +6,8 @@ module.exports = function convertProblemNodeToErrorMessage(node) {
 		},
 	} = node;
 
-	if (line) {
-		return `${message} on or around line ${line}`;
-	}
-
-	return message;
+	return {
+		message,
+		line,
+	};
 };

@@ -89,6 +89,13 @@ const ParseSuccess = ({ data }) => (
 	</div>
 );
 
+const ParseError = ({ error }) => {
+	if (error.line) {
+		return `${error.message} on or around line ${error.line}`;
+	}
+	return error.message;
+};
+
 const ParseErrors = ({ errors }) => (
 	<div className="parsed-errors">
 		<table
@@ -103,16 +110,14 @@ const ParseErrors = ({ errors }) => (
 					<th scope="col" role="columnheader">
 						Message
 					</th>
-					<th scope="col" role="columnheader">
-						Line
-					</th>
 				</tr>
 			</thead>
 			<tbody>
 				{errors.map(error => (
 					<tr>
-						<td>{error.message}</td>
-						<td>{error.line}</td>
+						<td>
+							<ParseError error={error} />
+						</td>
 					</tr>
 				))}
 			</tbody>

@@ -2,7 +2,7 @@
 
 **runbook.md** takes a runbook written in markdown ([example here](../EXAMPLE.md)), and converts it to JSON suitable for feeding to the runbooks app.
 
-the data is defined in `key`/`value` pairs where an `h2`'s value is coerced to the `key`, and the content between the `h2` and the next next (or end-of-file) is the `value`.
+the data is defined in `key`/`value` pairs where an `h2`'s value is coerced to the `key`, and the content between the `h2` and the next `h2` (or end-of-file) is the `value`.
 
 it does this job by converting the markdown file to an [`mdast`](https://github.com/syntax-tree/mdast/blob/master/readme.md) AST and running some validation on it before converting it to a interstitial [biz-ops AST](./boast.md) which can be further validated. The property key is coerced from the `h2` value by ～＊magic＊～.
 

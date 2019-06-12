@@ -5,10 +5,10 @@ module.exports = function coerceBizopsPropertiesToType({ validateProperty }) {
 	function mutate(node) {
 		try {
 			validateProperty(node.key, node.value);
-		} catch (message) {
+		} catch (error) {
 			return convertNodeToProblem({
 				node,
-				message,
+				message: error.message,
 			});
 		}
 	}

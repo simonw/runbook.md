@@ -27,7 +27,7 @@ function split(subdocument) {
 
 /*
   These coercers take a subdocument that should be coerced to their eponymous
-  type, and they return an object with a key of `valid`and a key of `value`. if
+  type, and they return an object with a key of `valid` and a key of `value`. if
   `valid` is `true` then `value` will be the coerced property. if `valid` is
   `false` then `value` will be the problem message
 */

@@ -81,7 +81,7 @@ const ParseSuccess = ({ data }) => (
 				{Object.entries(data).map(([name, value]) => (
 					<tr>
 						<td>{name}</td>
-						<td>{value}</td>
+						<td>{JSON.stringify(value)}</td>
 					</tr>
 				))}
 			</tbody>

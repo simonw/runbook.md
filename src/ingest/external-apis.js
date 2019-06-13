@@ -76,8 +76,25 @@ const updateBizOps = async (username, apiKey, systemCode, content) => {
 	});
 };
 
+const queryBizOps = async (username, apiKey, query) => {
+	return callExternalApi({
+		name: 'Biz Ops GraphQL',
+		method: 'POST',
+		url: `${process.env.BIZ_OPS_API_URL}/graphql`,
+		payload: { query },
+		headers: {
+			'x-api-key': apiKey,
+			'client-id': 'biz-ops-runbook-md',
+			'content-type': 'application/json',
+			'client-user-id': username,
+		},
+		expectedStatuses: [200, 404],
+	});
+};
+
 module.exports = {
 	ingest,
 	validate,
+	queryBizOps,
 	updateBizOps,
 };

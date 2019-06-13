@@ -1,36 +1,14 @@
 const logger = require('@financial-times/lambda-logger');
 const runbookMd = require('./lib/runbook.md');
 const { createLambda } = require('./lib/lambda');
-const { validate, updateBizOps } = require('./lib/external-apis');
-
-const responseHeaders = {
-	'Content-Type': 'application/json',
-	'Cache-Control': 'private, no-cache, no-store, must-revalidate, max-age=0',
-};
-
-const htmlResponse = ({ status, message, details }) => {
-	return {
-		statusCode: status,
-		body: JSON.stringify({ message, ...details }),
-		headers: responseHeaders,
-	};
-};
-const badRequestError = ({ message, details }) =>
-	htmlResponse({ status: 400, message, details });
-const success = ({ message, details }) =>
-	htmlResponse({ status: 200, message, details });
-
-const ingestedDetails = (parseResult, validationResult, writeResult) => ({
-	...(parseResult && {
-		parseErrors: parseResult.errors,
-		parseData: parseResult.data,
-	}),
-	...(validationResult && {
-		validationErrors: validationResult.errorMessages,
-		validationData: validationResult.percentages,
-	}),
-	...(writeResult && { updatedFields: writeResult }),
-});
+const { validate, updateBizOps } = require('./ingest/external-apis');
+const {
+	htmlResponse,
+	success,
+	badRequestError,
+	ingestedDetails,
+} = require('./ingest/response');
+const { validateCodesAgainstBizOps } = require('./ingest/code-validation');
 
 const ingest = async (username, userRequest) => {
 	if (!userRequest.systemCode) {
@@ -41,10 +19,16 @@ const ingest = async (username, userRequest) => {
 	}
 
 	const parseResult = await runbookMd.parseRunbookString(userRequest.content);
-	if (parseResult.errors.length) {
+	const checkResult = await validateCodesAgainstBizOps(
+		username,
+		parseResult.data,
+	);
+	const parseCheckResult = Object.assign({}, parseResult, checkResult);
+	parseCheckResult.errors = [].concat(parseResult.errors, checkResult.errors);
+	if (parseCheckResult.errors.length) {
 		return badRequestError({
 			message: 'Parse Failures. Please correct and resubmit',
-			details: ingestedDetails(parseResult),
+			details: ingestedDetails(parseCheckResult),
 		});
 	}
 

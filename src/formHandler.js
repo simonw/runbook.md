@@ -6,7 +6,7 @@ const path = require('path');
 const response = require('./lib/response');
 const { createLambda } = require('./lib/lambda');
 const template = require('./templates/form-input-page');
-const { ingest } = require('./lib/external-apis');
+const { ingest } = require('./ingest/external-apis');
 
 const sampleRunbook = fs.readFileSync(
 	path.resolve(__dirname, '../EXAMPLE.md'),

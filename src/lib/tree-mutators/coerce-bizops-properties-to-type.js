@@ -33,6 +33,7 @@ module.exports = function coerceBizopsPropertiesToType({
 }) {
 	function mutate(node) {
 		const { propertyType } = node;
+
 		const { hasMany } = systemProperties[node.key];
 
 		// If we come across a main type (such as System), then in the markdown

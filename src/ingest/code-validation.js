@@ -46,9 +46,9 @@ const formatBizOpsResponse = bizOpsResponse => {
 	Object.entries(bizOpsResponse.data).forEach(([key, value]) => {
 		const [type, code] = key.split(/_(.+)/);
 		if (value === null) {
-			errors.push(
-				`There is no ${type} with a code of ${code} stored within Biz Ops`,
-			);
+			errors.push({
+				message: `There is no ${type} with a code of ${code} stored within Biz Ops`,
+			});
 		} else {
 			bizOpsData[code] = value;
 		}

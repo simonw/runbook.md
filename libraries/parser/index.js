@@ -1,4 +1,4 @@
-const runbookMd = require('./src/lib/runbook.md');
+const runbookMd = require('./lib/runbook.md');
 
 module.exports = runbookMd;
 

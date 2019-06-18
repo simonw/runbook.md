@@ -1,14 +1,14 @@
 const logger = require('@financial-times/lambda-logger');
-const runbookMd = require('./lib/runbook.md');
+const runbookMd = require('@financial-times/runbook.md-parser');
 const { createLambda } = require('./lib/lambda');
-const { validate, updateBizOps } = require('./ingest/external-apis');
+const { validate, updateBizOps } = require('./lib/external-apis');
 const {
 	htmlResponse,
 	success,
 	badRequestError,
 	ingestedDetails,
-} = require('./ingest/response');
-const { validateCodesAgainstBizOps } = require('./ingest/code-validation');
+} = require('./lib/response');
+const { validateCodesAgainstBizOps } = require('./lib/code-validation');
 
 const ingest = async (username, userRequest) => {
 	if (!userRequest.systemCode) {

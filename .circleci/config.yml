@@ -1,153 +1,153 @@
 version: 2.1
 
 executors:
-  node:
-    docker:
-      - image: circleci/node:10.13
+    node:
+        docker:
+            - image: circleci/node:10.13
 
 commands:
-  attach_workspace_at_project:
-    steps:
-      - attach_workspace:
-          at: ~/project/
-  test-env:
-    steps:
-      - run:
-          name: Set test environment variables
-          command: make test-env
-  prod-env:
-    steps:
-      - run:
-          name: Set prod environment variables
-          command: make prod-env
+    attach_workspace_at_project:
+        steps:
+            - attach_workspace:
+                  at: ~/project/
+    test-env:
+        steps:
+            - run:
+                  name: Set test environment variables
+                  command: make test-env
+    prod-env:
+        steps:
+            - run:
+                  name: Set prod environment variables
+                  command: make prod-env
 
 references:
-  npm_cache_key: &npm_cache_key
-    v1-dependency-npm-{{ checksum "package-lock.json" }}
+    npm_cache_key: &npm_cache_key v1-dependency-npm-{{ checksum "package-lock.json" }}
 
-  restore_node_modules: &restore_node_modules
-    restore_cache:
-      keys:
-        - *npm_cache_key
-        - v1-dependency-npm-
+    restore_node_modules: &restore_node_modules
+        restore_cache:
+            keys:
+                - *npm_cache_key
+                - v1-dependency-npm-
 
-  cache_node_modules: &cache_node_modules
-    save_cache:
-      key: *npm_cache_key
-      paths:
-        - ./node_modules/
+    cache_node_modules: &cache_node_modules
+        save_cache:
+            key: *npm_cache_key
+            paths:
+                - ./node_modules/
+                - ./lambdas/ingester/node_modules/
+                - ./libraries/parser/node_modules/
 
-  install_aws_cli: &install_aws_cli
-    run:
-      name: Install AWS CLI
-      command: |
-        sudo apt-get update -y
-        sudo apt-get install -y python-pip python-dev build-essential
-        sudo pip install --upgrade pip
-        sudo pip install awscli --upgrade
+    install_aws_cli: &install_aws_cli
+        run:
+            name: Install AWS CLI
+            command: |
+                sudo apt-get update -y
+                sudo apt-get install -y python-pip python-dev build-essential
+                sudo pip install --upgrade pip
+                sudo pip install awscli --upgrade
 
-  only_version_tags: &only_version_tags
-    tags:
-      only: /^v[0-9]+$/
+    only_version_tags: &only_version_tags
+        tags:
+            only: /^v[0-9]+$/
 
 jobs:
-  install:
-    executor: node
-    steps:
-      - checkout
-      - attach_workspace_at_project
-      - *restore_node_modules
-      - run:
-          name: Install dependencies
-          command: npm install --no-save
+    install:
+        executor: node
+        steps:
+            - checkout
+            - attach_workspace_at_project
+            - *restore_node_modules
+            - run:
+                  name: Install dependencies
+                  command: npm install --no-save
 
-      - *cache_node_modules
+            - *cache_node_modules
 
-      - run: make test-env
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
+            - run: make test-env
+            - persist_to_workspace:
+                  root: .
+                  paths:
+                      - .
 
-  test:
-    executor: node
-    steps:
-      - attach_workspace_at_project
-      - run:
-          name: Run test
-          command: make test
+    test:
+        executor: node
+        steps:
+            - attach_workspace_at_project
+            - run:
+                  name: Run test
+                  command: make test
 
+    verify:
+        executor: node
+        steps:
+            - attach_workspace_at_project
+            - run:
+                  name: Run verify
+                  command: make verify -j 3
 
-  verify:
-    executor: node
-    steps:
-      - attach_workspace_at_project
-      - run:
-          name: Run verify
-          command: make verify -j 3
+    release_test:
+        executor: node
+        steps:
+            - attach_workspace_at_project
+            - test-env
+            - *install_aws_cli
 
-  release_test:
-    executor: node
-    steps:
-      - attach_workspace_at_project
-      - test-env
-      - *install_aws_cli
+            - deploy:
+                  name: Serverless deploy test.
+                  command: bash .circleci/do-exclusively.sh --branch $CIRCLE_BRANCH --job release_test make -C lambdas/ingester deploy
+                  environment:
+                      NODE_ENV: production
 
-      - deploy:
-          name: Serverless deploy test.
-          command: bash .circleci/do-exclusively.sh --branch $CIRCLE_BRANCH --job release_test make deploy
-          environment:
-            NODE_ENV: production
+    release_prod:
+        executor: node
+        steps:
+            - attach_workspace_at_project
+            - prod-env
+            - *install_aws_cli
 
-  release_prod:
-    executor: node
-    steps:
-      - attach_workspace_at_project
-      - prod-env
-      - *install_aws_cli
-
-      - deploy:
-          name: Serverless deploy prod
-          command: bash .circleci/do-exclusively.sh --tag $CIRCLE_TAG --job release_prod make deploy
-          environment:
-            NODE_ENV: production
+            - deploy:
+                  name: Serverless deploy prod
+                  command: bash .circleci/do-exclusively.sh --tag $CIRCLE_TAG --job release_prod make -C lambdas/ingester deploy
+                  environment:
+                      NODE_ENV: production
 
 workflows:
-  version: 2
-  build-and-deploy:
-    jobs:
-      - install:
-          context: rel-eng-creds
-          filters: *only_version_tags
-      - test:
-          requires:
-            - install
-          filters: *only_version_tags
-      - verify:
-          context: rel-eng-creds
-          requires:
-            - install
-          filters: *only_version_tags
-      - release_test:
-          context: rel-eng-creds
-          requires:
-            - verify
-            - test
-          filters:
-            branches:
-              only: master
-      - release_prod:
-          context: rel-eng-creds
-          requires:
-            - verify
-            - test
-          filters:
-            <<: *only_version_tags
-            branches:
-              ignore: /.*/
+    version: 2
+    build-and-deploy:
+        jobs:
+            - install:
+                  context: rel-eng-creds
+                  filters: *only_version_tags
+            - test:
+                  requires:
+                      - install
+                  filters: *only_version_tags
+            - verify:
+                  context: rel-eng-creds
+                  requires:
+                      - install
+                  filters: *only_version_tags
+            - release_test:
+                  context: rel-eng-creds
+                  requires:
+                      - verify
+                      - test
+                  filters:
+                      branches:
+                          only: master
+            - release_prod:
+                  context: rel-eng-creds
+                  requires:
+                      - verify
+                      - test
+                  filters:
+                      <<: *only_version_tags
+                      branches:
+                          ignore: /.*/
 
 experimental:
-  notify:
-    branches:
-      only:
-        - master
+    notify:
+        branches:
+            only:
+                - master

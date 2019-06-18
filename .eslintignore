@@ -10,5 +10,6 @@
 build
 dist
 coverage
+node_modules
 
 secret-squirrel.js

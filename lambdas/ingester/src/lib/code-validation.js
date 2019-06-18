@@ -1,5 +1,5 @@
-const schema = require('../lib/get-configured-schema.js');
-const { queryBizOps } = require('../ingest/external-apis');
+const schema = require('@financial-times/runbook.md-parser/lib/get-configured-schema.js');
+const { queryBizOps } = require('./external-apis');
 
 const pushUnique = (accumulator, valuesToAdd) => {
 	valuesToAdd.forEach(valueToAdd => {

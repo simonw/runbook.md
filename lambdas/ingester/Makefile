@@ -1,6 +1,7 @@
 -include ../../node_modules/@financial-times/rel-engage/index.mk
 
-PROJECT_NAME=biz-ops-runbook-md-ingester
+# TODO move to a localised name for this
+PROJECT_NAME=biz-ops-runbook-md
 PRODUCT_NAME=biz-ops
 
 test:

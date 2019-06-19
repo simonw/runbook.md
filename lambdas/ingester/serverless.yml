@@ -53,7 +53,7 @@ custom:
 functions:
     ingest:
         description: Ingest a runbook.md
-        handler: lambdas/ingester/dist/ingestHandler.handler
+        handler: dist/ingestHandler.handler
         timeout: 30
         events:
             - http:
@@ -61,7 +61,7 @@ functions:
                   method: post
     form:
         description: GUI for driving ingestion of a runbook.md
-        handler: lambdas/ingester/dist/formHandler.handler
+        handler: dist/formHandler.handler
         timeout: 30
         events:
             - http:

@@ -1,4 +1,4 @@
-export PATH := $(PATH):./node_modules/.bin
+-include ../../node_modules/@financial-times/rel-engage/index.mk
 
 PROJECT_NAME=biz-ops-runbook-md-ingester
 PRODUCT_NAME=biz-ops

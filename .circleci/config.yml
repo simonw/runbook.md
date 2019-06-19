@@ -10,17 +10,26 @@ commands:
         steps:
             - attach_workspace:
                   at: ~/project/
+    link-env:
+        steps:
+            - run:
+                  name: Link environment file for packages
+                  command: |
+                      for package in lambdas/* libraries/*; do
+                        ln -s ../../.env $package/.env;
+                      done
     test-env:
         steps:
             - run:
                   name: Set test environment variables
                   command: make test-env
+            - link-env
     prod-env:
         steps:
             - run:
                   name: Set prod environment variables
                   command: make prod-env
-
+            - link-env
 references:
     npm_cache_key: &npm_cache_key v1-dependency-npm-{{ checksum "package-lock.json" }}
 
@@ -95,9 +104,7 @@ jobs:
 
             - deploy:
                   name: Serverless deploy test.
-                  command: |
-                      make -C lambdas/ingester test-env
-                      bash .circleci/do-exclusively.sh --branch $CIRCLE_BRANCH --job release_test make -C lambdas/ingester deploy
+                  command: bash .circleci/do-exclusively.sh --branch $CIRCLE_BRANCH --job release_test make -C lambdas/ingester deploy
                   environment:
                       NODE_ENV: production
 
@@ -110,9 +117,7 @@ jobs:
 
             - deploy:
                   name: Serverless deploy prod
-                  command: |
-                      make -C lambdas/ingester prod-env
-                      bash .circleci/do-exclusively.sh --tag $CIRCLE_TAG --job release_prod make -C lambdas/ingester deploy
+                  command: bash .circleci/do-exclusively.sh --tag $CIRCLE_TAG --job release_prod make -C lambdas/ingester deploy
                   environment:
                       NODE_ENV: production
 

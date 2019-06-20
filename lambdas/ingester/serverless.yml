@@ -65,10 +65,10 @@ functions:
         timeout: 30
         events:
             - http:
-                  path: /
+                  path: /runbook.md
                   method: get
             - http:
-                  path: /
+                  path: /runbook.md
                   method: post
 plugins:
     - serverless-plugin-aws-alerts

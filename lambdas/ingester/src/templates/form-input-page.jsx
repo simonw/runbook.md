@@ -31,7 +31,7 @@ const ValidateForm = ({
 	return (
 		<Fragment>
 			<h2 id="edit-form--title">Parse, Validate and Import</h2>
-			<form action={`${process.env.BASE_URL}/`} method="POST">
+			<form method="POST">
 				<div className="o-grid-container">
 					<div className="o-grid-row o-forms--wide">
 						<div data-o-grid-colspan="3">

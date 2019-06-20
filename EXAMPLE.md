@@ -38,7 +38,7 @@ support-team
 
 ## dataOwner
 
--   data-owner
+data-owner
 
 ## containsPersonalData
 

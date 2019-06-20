@@ -35,7 +35,7 @@ const buildGraphQLQuery = bizOpsCodes =>
 				`${type}_${code.replace(
 					/[-.]/g,
 					'_',
-				)}:${type} (code:"${code}") {code,name}`,
+				)}:${type} (code:"${code}") {code}`,
 		)
 		.join('\n')}
 	}`;

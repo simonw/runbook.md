@@ -65,7 +65,7 @@ const createLambda = (
 			}
 			return bypassS3o ? { isSignedIn: true } : { isSignedIn: undefined };
 		})
-		.then(({ isSignedIn, username }) => {
+		.then(result => {
 			if (s3oRedirectResponse) {
 				const [error, response] = s3oRedirectResponse;
 				if (error) {
@@ -76,9 +76,11 @@ const createLambda = (
 				return response;
 			}
 
-			if (isSignedIn === false) {
+			if (!result || result.isSignedIn === false) {
 				throw httpError(401, 'Not signed in. Try deleting s3o cookies');
 			}
+
+			const { isSignedIn, username } = result;
 
 			return handler(
 				Object.assign({}, event, {
@@ -95,6 +97,7 @@ const createLambda = (
 			}
 			const errorWrapper = new Error('Internal server error');
 			errorWrapper.cause = error;
+			console.log(errorWrapper);
 			return errorHandler(errorWrapper, event);
 		})
 		.catch(error => {

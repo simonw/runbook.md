@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const EncodingPlugin = require('webpack-encoding-plugin');

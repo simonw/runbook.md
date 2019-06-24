@@ -50,10 +50,16 @@ custom:
         port: 3000
         noTimeout: true
 
+    webpack:
+        webpackConfig: 'webpack.server.config.js'
+        includeModules: false
+        packager: 'npm'
+        excludeFiles: test/*
+
 functions:
     ingest:
         description: Ingest a runbook.md
-        handler: dist/ingestHandler.handler
+        handler: src/ingestHandler.handler
         timeout: 30
         events:
             - http:
@@ -61,7 +67,7 @@ functions:
                   method: post
     form:
         description: GUI for driving ingestion of a runbook.md
-        handler: dist/formHandler.handler
+        handler: src/formHandler.handler
         timeout: 30
         events:
             - http:
@@ -73,9 +79,11 @@ functions:
 plugins:
     - serverless-plugin-aws-alerts
     - serverless-log-forwarding
+    - serverless-webpack
     - serverless-offline
 
 package:
+    individually: true
     exclude:
         - certs/**
         - coverage/**

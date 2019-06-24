@@ -1,6 +1,7 @@
 module.exports = {
 	files: {
 		allow: [
+			'lambdas/ingester/Makefile'
 		],
 		allowOverrides: []
 	},

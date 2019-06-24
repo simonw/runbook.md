@@ -1,18 +1,20 @@
 const logger = require('@financial-times/lambda-logger');
 const httpError = require('http-errors');
-const { promisify } = require('util');
-const readFile = promisify(require('fs').readFile);
-const resolvePath = require('path').resolve;
+// const { promisify } = require('util');
+// const readFile = promisify(require('fs').readFile);
+// const resolvePath = require('path').resolve;
 const querystring = require('qs');
 const response = require('./lib/response');
 const { createLambda } = require('./lib/lambda');
 const template = require('./templates/form-input-page');
 const { ingest } = require('./lib/external-apis');
 
-const exampleContent = readFile(
-	resolvePath(__dirname, '..', '..', '..', 'docs', 'example.md'),
-	'utf-8',
-);
+// const exampleContent = readFile(
+// 	resolvePath(__dirname, '..', '..', '..', 'docs', 'example.md'),
+// 	'utf-8',
+// );
+
+const exampleContent = require('../../../docs/example');
 
 const displayForm = async event => {
 	logger.info(

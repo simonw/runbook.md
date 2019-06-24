@@ -70,9 +70,7 @@ const ValidateForm = ({
 						}
 						linkUrl={
 							status === 200 && writeToBizOps
-								? `${
-										process.env.BIZ_OPS_URL
-								  }/System/${systemCode}`
+								? `${process.env.BIZ_OPS_URL}/System/${systemCode}`
 								: undefined
 						}
 					/>

@@ -23,9 +23,7 @@ const callExternalApi = async ({
 		);
 		throw httpError(
 			fetchResponse.status,
-			`Attempt to access ${name} ${url} ${options} failed with ${
-				fetchResponse.statusText
-			}`,
+			`Attempt to access ${name} ${url} ${options} failed with ${fetchResponse.statusText}`,
 		);
 	}
 	logger.info(
@@ -62,9 +60,7 @@ const updateBizOps = async (username, apiKey, systemCode, content) => {
 	return callExternalApi({
 		name: 'Biz Ops Update',
 		method: 'PATCH',
-		url: `${
-			process.env.BIZ_OPS_API_URL
-		}/v2/node/System/${systemCode}${queryString}`,
+		url: `${process.env.BIZ_OPS_API_URL}/v2/node/System/${systemCode}${queryString}`,
 		payload: content,
 		headers: {
 			'x-api-key': apiKey,

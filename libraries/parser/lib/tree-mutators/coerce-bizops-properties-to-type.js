@@ -94,9 +94,7 @@ module.exports = function coerceBizopsPropertiesToType({
 
 		convertNodeToProblem({
 			node,
-			message: `i couldn't resolve ${
-				node.propertyType
-			} to a valid biz-ops property type or enum`,
+			message: `i couldn't resolve ${node.propertyType} to a valid biz-ops property type or enum`,
 		});
 	}
 

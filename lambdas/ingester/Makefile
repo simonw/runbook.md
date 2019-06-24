@@ -7,7 +7,7 @@ PRODUCT_NAME=biz-ops
 serverless-offline:
 	serverless offline --stage test start
 
-deploy: transpile build-statics upload-statics deploy-aws
+deploy: build-statics upload-statics transpile deploy-aws
 
 upload-statics:
 	aws s3 sync \

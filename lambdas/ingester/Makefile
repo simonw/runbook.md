@@ -1,15 +1,8 @@
 -include ../../node_modules/@financial-times/rel-engage/index.mk
 
-# TODO move to a localised name for this
+# TODO move to a localised name for this (requires vault update)
 PROJECT_NAME=biz-ops-runbook-md
 PRODUCT_NAME=biz-ops
-
-test:
-ifneq ($(CI),)
-	jest test
-else
-	jest test --watch
-endif
 
 serverless-offline:
 	serverless offline --stage test start

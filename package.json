@@ -21,6 +21,8 @@
     "@financial-times/athloi": "^1.0.0-beta.26"
   },
   "devDependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.3.0",
+    "@babel/preset-env": "^7.4.5",
     "@financial-times/rel-engage": "^7.1.1",
     "eslint-plugin-jest": "^22.6.4",
     "hyperons": "^1.0.0-beta.2",

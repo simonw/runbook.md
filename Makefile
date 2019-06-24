@@ -27,4 +27,8 @@ PROJECT_NAME=biz-ops-runbook-md
 PRODUCT_NAME=biz-ops
 
 test:
-	npx athloi run test
+ifneq ($(CI),)
+	jest
+else
+	jest --watch
+endif

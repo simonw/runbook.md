@@ -41,6 +41,7 @@ test('boolean fields with non-boolean contents are errors', async () => {
 	});
 
 	expect(errors.length).toBe(1);
+	expect(errors[0].message).toMatch(/\bsure\b/);
 });
 
 test('string types are coerced to string', async () => {
@@ -83,6 +84,9 @@ test('enums types with incorrect values produce error', async () => {
 
 	expect(data.serviceTier).toBe(undefined);
 	expect(errors.length).toBe(1);
+	const [{ message }] = errors;
+	expect(message).toMatch(/\bcardboard\b/);
+	expect(message).toContain('ServiceTier');
 });
 
 // Before this test, we had links coming out wrapped in triangle brackets
@@ -144,6 +148,10 @@ test('properties with hasMany must be bulleted lists', async () => {
 	`);
 
 	expect(errors).toHaveLength(1);
+
+	const [{ message }] = errors;
+	expect(message).toContain('list');
+	expect(message).toContain('bullet');
 });
 
 test('properties without hasMany must not be bulleted lists', async () => {
@@ -156,6 +164,10 @@ test('properties without hasMany must not be bulleted lists', async () => {
 	`);
 
 	expect(errors).toHaveLength(1);
+
+	const [{ message }] = errors;
+	expect(message).toContain('list');
+	expect(message).toContain('bullet');
 });
 
 test('subdocuments have their headers reduced two levels', async () => {
@@ -213,4 +225,8 @@ test('date fields with bad dates are an error', async () => {
 	`);
 
 	expect(errors).toHaveLength(1);
+
+	const [{ message }] = errors;
+	expect(message).toContain("mario's birthday");
+	expect(message).toContain('Date');
 });

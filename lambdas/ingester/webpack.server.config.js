@@ -14,20 +14,12 @@ const sls = {
 	},
 	devtool: slsw.lib.webpack.isLocal ? 'cheap-eval-source-map' : 'source-map',
 	stats: 'minimal',
-	externals: slsw.lib.webpack.isLocal
-		? [nodeExternals()]
-		: { 'aws-sdk': 'aws-sdk' },
+	externals: [nodeExternals()],
 	performance: {
 		hints: false,
 	},
 	resolve: {
 		extensions: ['.js', '.jsx'],
-		alias: {
-			'@financial-times/runbook.md-parser': path.resolve(
-				__dirname,
-				'../../libraries/parser/',
-			),
-		},
 	},
 	module: {
 		rules: [

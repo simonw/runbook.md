@@ -2,7 +2,7 @@ const { omit } = require('lodash');
 const logger = require('@financial-times/lambda-logger');
 const s3o = require('@financial-times/s3o-lambda');
 const httpError = require('http-errors');
-const { schema } = require('./get-configured-schema');
+const schema = require('./get-configured-schema');
 const responseHelper = require('./response');
 const config = require('./config');
 

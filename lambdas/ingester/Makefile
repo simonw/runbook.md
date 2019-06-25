@@ -9,6 +9,9 @@ serverless-offline:
 
 deploy: build-statics move-asset-manifest upload-statics deploy-aws
 
+package:
+	serverless package
+
 upload-statics:
 	aws s3 sync \
 	--cache-control=public,max-age=31536000,immutable \
@@ -27,10 +30,13 @@ transpile:
 		else serverless webpack --mode production; \
 	fi
 
+build-production-assets:
+	webpack --config webpack.browser.config.js --mode production;
+
 build-statics:
-	@if [ -z $(CI) ]; \
+	@if [ -z !$(CI) ]; \
 		then webpack-dev-server --config webpack.browser.config.js --mode development; \
-		else webpack --config webpack.browser.config.js --mode production; \
+		else make build-production-assets; \
 	fi
 
 run: clean

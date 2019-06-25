@@ -84,7 +84,6 @@ plugins:
     - serverless-offline
 
 package:
-    # individually: true
     exclude:
         - certs/**
         - coverage/**

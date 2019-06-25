@@ -2,6 +2,7 @@ const { omit } = require('lodash');
 const logger = require('@financial-times/lambda-logger');
 const s3o = require('@financial-times/s3o-lambda');
 const httpError = require('http-errors');
+const { schema } = require('./get-configured-schema');
 const responseHelper = require('./response');
 const config = require('./config');
 
@@ -39,6 +40,8 @@ const createLambda = (
 			body: { message: 'warm up call' },
 		});
 	}
+
+	await schema.refresh();
 	// Decode path parameters parameters as this isn't done by API Gateway (Though it does do query params)
 	// See https://github.com/dherault/serverless-offline/issues/265 for discusison
 	if (event.pathParameters) {

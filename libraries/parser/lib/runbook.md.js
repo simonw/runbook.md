@@ -1,7 +1,7 @@
 const remarkParse = require('remark-parse');
 const createStream = require('unified-stream');
 const unified = require('unified');
-const schema = require('./get-configured-schema.js');
+const schema = require('@financial-times/biz-ops-schema');
 const createBizopsNameNode = require('./tree-mutators/create-bizops-name-node');
 const createBizopsDescriptionNode = require('./tree-mutators/create-bizops-description-node');
 const createBizopsPropertyNodes = require('./tree-mutators/create-bizops-property-nodes');
@@ -11,8 +11,6 @@ const validateBizopsProperties = require('./tree-mutators/validate-bizops-proper
 const stringifyBoast = require('./unist-stringifiers/stringify-boast');
 
 async function runbookMd() {
-	await schema.refresh();
-
 	const types = schema.getTypes();
 
 	const system = schema.getTypes().find(type => type.name === 'System');

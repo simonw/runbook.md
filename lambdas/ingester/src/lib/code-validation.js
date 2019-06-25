@@ -1,4 +1,4 @@
-const { schema } = require('@financial-times/runbook.md-parser');
+const { schema } = require('./get-configured-schema');
 const { queryBizOps } = require('./external-apis');
 
 const pushUnique = (accumulator, valuesToAdd) => {

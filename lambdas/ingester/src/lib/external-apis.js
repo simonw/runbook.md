@@ -1,6 +1,6 @@
 const logger = require('@financial-times/lambda-logger');
 const httpError = require('http-errors');
-const nodeFetch = require('node-fetch');
+const nodeFetch = require('isomorphic-fetch');
 
 const callExternalApi = async ({
 	name,
@@ -32,16 +32,6 @@ const callExternalApi = async ({
 	);
 	return { status: fetchResponse.status, json: await fetchResponse.json() };
 };
-
-const ingest = async (event, request) =>
-	callExternalApi({
-		name: 'RUNBOOK.md ingest',
-		method: 'POST',
-		url: `${process.env.BASE_URL}/ingest`,
-		payload: request,
-		headers: { Cookie: event.headers.Cookie },
-		expectedStatuses: [200, 400, 403],
-	});
 
 const validate = async request =>
 	callExternalApi({
@@ -89,7 +79,6 @@ const queryBizOps = async (username, apiKey, query) => {
 };
 
 module.exports = {
-	ingest,
 	validate,
 	queryBizOps,
 	updateBizOps,

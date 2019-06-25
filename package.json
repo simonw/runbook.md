@@ -30,6 +30,6 @@
   },
   "workspaces": [
     "libraries/*",
-    "lambdas/*"
+    "lambdas/ingester"
   ]
 }

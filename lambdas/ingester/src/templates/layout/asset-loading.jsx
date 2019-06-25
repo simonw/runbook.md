@@ -23,11 +23,11 @@ const buildOrigamiUrl = (type, map) =>
 
 const origamiCssUrl = buildOrigamiUrl('css', {
 	layout: '^3.1.0',
-	'header-services': '^3.2.3',
+	'header-services': '^3.3.0',
 	grid: '^4.5.3',
 	table: '^7.3.0',
 	message: '^3.0.0',
-	forms: '^6.0.0',
+	forms: '^7.0.8',
 	normalise: '^1.6.2',
 	buttons: '^5.15.1',
 	colors: '^4.8.5',
@@ -43,7 +43,7 @@ const origamiJsUrl = buildOrigamiUrl('js', {
 	layout: '^3.1.0',
 	grid: '^4.5.3',
 	table: '^7.3.0',
-	'header-services': '^3.2.3',
+	'header-services': '^3.3.0',
 	expander: '^4.4.4',
 	tooltip: '^3.4.0',
 	date: '^2.11.0',

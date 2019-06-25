@@ -19,10 +19,8 @@ const Layout = props => (
 			<div
 				className={`o-layout o-layout--${props.layout || 'landing'}`}
 				data-o-component="o-layout"
-				data-o-layout-nav-heading-selector=".section-heading"
 			>
 				<Header {...props} />
-
 				{props.children}
 				<Footer {...props} />
 			</div>

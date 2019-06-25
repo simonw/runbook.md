@@ -97,7 +97,6 @@ const createLambda = (
 			}
 			const errorWrapper = new Error('Internal server error');
 			errorWrapper.cause = error;
-			console.log(errorWrapper);
 			return errorHandler(errorWrapper, event);
 		})
 		.catch(error => {

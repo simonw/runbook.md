@@ -50,6 +50,10 @@ const sls = {
 					},
 				},
 			},
+			{
+				test: /\.md$/i,
+				use: 'raw-loader',
+			},
 		],
 	},
 };

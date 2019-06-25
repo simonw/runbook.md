@@ -1,9 +1,11 @@
 @import 'meter';
+@import 'manualEntryForm';
 
 .o-header-services__title small {
 	margin-left: 5px;
 	margin-top: 5px;
 }
+
 .o-header-services__title small a {
 	color: var(--o-colors-teal-90);
 	font-style: italic;
@@ -34,4 +36,8 @@
 
 .with-line-breaks {
 	white-space: pre;
+}
+
+.fullwidth {
+	width: 100%;
 }

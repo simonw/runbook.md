@@ -4,7 +4,7 @@ const {
 	SystemCode,
 	WriteFlag,
 	ApiKey,
-	RunbookMd,
+	RunbookEntry,
 } = require('./components/input-fields');
 
 const {
@@ -30,35 +30,53 @@ const ValidateForm = ({
 }) => {
 	return (
 		<Fragment>
-			<h2 id="edit-form--title">Parse, Validate and Import</h2>
-			<form method="POST">
-				<div className="o-grid-container">
-					<div className="o-grid-row o-forms--wide">
-						<div data-o-grid-colspan="3">
-							<SystemCode systemCode={systemCode} />
-						</div>
-						<div data-o-grid-colspan="3">
-							<WriteFlag writeToBizOps={writeToBizOps} />
-						</div>
-						<div data-o-grid-colspan="6">
-							<ApiKey bizOpsApiKey={bizOpsApiKey} />
-						</div>
+			<div className="o-layout__sidebar" />
+			<form
+				method="POST"
+				className="o-layout__main o-layout-typography"
+				id="manualRunbookEntry"
+			>
+				<h1 id="edit-form--title">Parse, Validate and Import</h1>
+				<h2 id="runbook-input">Runbook Content</h2>
+				<div className="o-grid-row fullwidth">
+					<div data-o-grid-colspan="12">
+						<RunbookEntry
+							exampleContent={exampleContent}
+							content={content}
+						/>
 					</div>
 				</div>
-				<p />
-				<div className="o-forms o-forms--wide">
-					<RunbookMd
-						exampleContent={exampleContent}
-						content={content}
-					/>
+				<aside>
+					<p>
+						If you have enabled writing to Biz-Ops, this action will
+						also update any valid System fields.
+					</p>
+					<p className="runbook-form__submit--error">
+						Please complete all fields before submitting.
+					</p>
+					<button
+						className="o-buttons o-buttons--primary o-buttons--mono o-buttons--big"
+						type="submit"
+						id="submitRunbookForm"
+					>
+						Submit
+					</button>
+				</aside>
+				<h2 id="biz-ops-settings">Update Biz-Ops</h2>
+				<div className="o-grid-row">
+					<div data-o-grid-colspan="12">
+						<WriteFlag writeToBizOps={writeToBizOps} />
+					</div>
 				</div>
-				<p />
-				<button
-					className="o-buttons o-buttons--primary o-buttons--mono o-buttons--big"
-					type="submit"
-				>
-					Submit
-				</button>
+				<div className="o-grid-row">
+					<div data-o-grid-colspan="6">
+						<SystemCode systemCode={systemCode} />
+					</div>
+					<div data-o-grid-colspan="6">
+						<ApiKey bizOpsApiKey={bizOpsApiKey} />
+					</div>
+				</div>
+
 				{message ? (
 					<Message
 						status={status}

@@ -43,6 +43,8 @@ const Header = () => {
 							powered by{' '}
 							<a href="https://biz-ops.in.ft.com">Biz Ops</a>
 						</small>
+						{/* TODO: get Origami to guard for the existence of this bc client-side error */}
+						<span className="o-header-services__primary-nav" />
 					</div>
 				</div>
 			</header>

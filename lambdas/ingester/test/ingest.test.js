@@ -1,83 +1,138 @@
-const { ingest } = require('../src/ingestHandler');
+jest.mock('../src/lib/external-apis');
+jest.mock('../src/lib/code-validation');
 
-test('Ingest is available and runs when all parameters are provided', async () => {
-	const request = {
-		systemCode: 'geoff',
-		writeToBizOps: false,
-		bizOpsApiKey: 'dummy',
-		content: '# this is a name',
-	};
-	const result = await ingest('dummyUser', request);
-	expect(result.statusCode).toBe(200);
-	const body = JSON.parse(result.body);
-	expect(body.message).toBe(
-		'Parse & Validation Complete. Biz Ops Was NOT Updated as you did not enable the writeToBizOps flag.',
-	);
-	expect(body.parseData).toHaveProperty('name', 'this is a name');
-});
+const runbookMd = require('@financial-times/runbook.md-parser');
+const externalApis = require('../src/lib/external-apis');
+const bizOpsValidation = require('../src/lib/code-validation');
 
-test('Ingest fails when systemCode field is omitted', async () => {
-	const request = {
-		writeToBizOps: false,
-		bizOpsApiKey: 'dummy',
-		content: '# this is a name',
-	};
-	const result = await ingest('dummyUser', request);
-	expect(result.statusCode).toBe(400);
-	const body = JSON.parse(result.body);
-	expect(body.message).toBe('Please supply a systemCode');
-});
+const { ingest } = require('../src/commands/ingest');
 
-test('Ingest does not fail when writeToBizOps field is omitted since the default is false', async () => {
-	const request = {
-		systemCode: 'geoff',
-		bizOpsApiKey: 'dummy',
-		content: '# this is a name',
-	};
-	const result = await ingest('dummyUser', request);
-	expect(result.statusCode).toBe(200);
-	const body = JSON.parse(result.body);
-	expect(body.message).toBe(
-		'Parse & Validation Complete. Biz Ops Was NOT Updated as you did not enable the writeToBizOps flag.',
-	);
-});
+const s3oUsername = 'dummyUser';
+const payload = {
+	systemCode: 'system-code',
+	writeToBizOps: false,
+	bizOpsApiKey: 'dummyKey',
+	content: '# this is a name',
+};
 
-test('Ingest fails when api key field is omitted if writeToBizOps is true', async () => {
-	const request = {
-		systemCode: 'geoff',
-		writeToBizOps: true,
-		content: '# this is a name',
+describe('ingest command', () => {
+	const runIngest = async (payloadOverrides = {}) => {
+		const testPayload = { ...payload, ...payloadOverrides };
+		let result;
+		try {
+			result = await ingest(s3oUsername, testPayload);
+		} catch (error) {
+			result = error;
+			result.rejected = true;
+		}
+		const { data } = await runbookMd.parseRunbookString(payload.content);
+		return { result, parseData: data };
 	};
-	const result = await ingest('dummyUser', request);
-	expect(result.statusCode).toBe(400);
-	const body = JSON.parse(result.body);
-	expect(body.message).toBe(
-		'Unable to update Biz Ops. No API key was been provided',
-	);
-});
 
-test('Ingest does not fail when api key field is omitted if writeToBizOps is false', async () => {
-	const request = {
-		systemCode: 'geoff',
-		writeToBizOps: false,
-		content: '# this is a name',
-	};
-	const result = await ingest('dummyUser', request);
-	expect(result.statusCode).toBe(200);
-	const body = JSON.parse(result.body);
-	expect(body.message).toBe(
-		'Parse & Validation Complete. Biz Ops Was NOT Updated as you did not enable the writeToBizOps flag.',
-	);
-});
+	const spies = {};
 
-test('Ingest fails when content field is omitted', async () => {
-	const request = {
-		systemCode: 'geoff',
-		writeToBizOps: false,
-		bizOpsApiKey: 'dummy',
-	};
-	const result = await ingest('dummyUser', request);
-	expect(result.statusCode).toBe(400);
-	const body = JSON.parse(result.body);
-	expect(body.message).toBe('Please supply RUNBOOK.md content');
+	beforeEach(() => {
+		spies.validate = jest
+			.spyOn(externalApis, 'validate')
+			.mockResolvedValue({});
+		spies.updateBizOps = jest
+			.spyOn(externalApis, 'updateBizOps')
+			.mockResolvedValue({ status: 200 });
+		spies.validateCodesAgainstBizOps = jest
+			.spyOn(bizOpsValidation, 'validateCodesAgainstBizOps')
+			.mockResolvedValue({});
+	});
+
+	afterEach(() => {
+		jest.restoreAllMocks();
+	});
+
+	describe('when all parameters are provided', () => {
+		test('parses, validates and imports to biz-ops', async () => {
+			const { result, parseData } = await runIngest({
+				writeToBizOps: true,
+			});
+			expect(spies.validateCodesAgainstBizOps).toHaveBeenCalled();
+			expect(spies.validate).toHaveBeenCalled();
+			expect(spies.updateBizOps).toHaveBeenCalled();
+			expect(result).toMatchObject({
+				message: expect.stringMatching('Biz Ops has been updated'),
+				details: {
+					parseData,
+				},
+			});
+		});
+	});
+
+	describe('when runbook content is omitted', () => {
+		test('fail', async () => {
+			const { result } = await runIngest({
+				content: undefined,
+			});
+			expect(result).toMatchObject({
+				rejected: true,
+				message: expect.stringMatching(
+					'Please supply RUNBOOK.md content',
+				),
+			});
+		});
+	});
+
+	describe('when systemCode is omitted', () => {
+		test('and writing to biz-ops is disabled, succeed', async () => {
+			const { result, parseData } = await runIngest({
+				systemCode: undefined,
+			});
+			expect(result).toMatchObject({
+				message: expect.stringMatching('Parse & Validation Complete'),
+				details: {
+					parseData,
+				},
+			});
+		});
+
+		test('and writing to biz-ops is enabled, fail', async () => {
+			const { result, parseData } = await runIngest({
+				systemCode: undefined,
+				writeToBizOps: true,
+			});
+			expect(result).toMatchObject({
+				rejected: true,
+				message: expect.stringMatching('Please supply a systemCode'),
+				details: {
+					parseData,
+				},
+			});
+		});
+	});
+
+	describe('when bizOpsApiKey is omitted', () => {
+		test('and writing to biz-ops is disabled, succeed', async () => {
+			const { result, parseData } = await runIngest({
+				bizOpsApiKey: undefined,
+			});
+			expect(result).toMatchObject({
+				message: expect.stringMatching('Parse & Validation Complete'),
+				details: {
+					parseData,
+				},
+			});
+		});
+
+		test('and writing to biz-ops is enabled, fail', async () => {
+			const { result, parseData } = await runIngest({
+				bizOpsApiKey: undefined,
+				writeToBizOps: true,
+			});
+			expect(result).toMatchObject({
+				rejected: true,
+				message: expect.stringMatching(
+					'Please supply a Biz-Ops API key',
+				),
+				details: {
+					parseData,
+				},
+			});
+		});
+	});
 });

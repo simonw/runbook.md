@@ -16,7 +16,7 @@ upload-statics:
 	./dist/browser s3://biz-ops-statics.${AWS_ACCOUNT_ID}/biz-ops-runbook-md
 
 deploy-aws:
-	serverless deploy --stage ${ENVIRONMENT}
+	serverless deploy --stage ${ENVIRONMENT} --verbose
 
 clean:
 	rm -rf dist/

@@ -3,24 +3,31 @@ const path = require('path');
 const slsw = require('serverless-webpack');
 const nodeExternals = require('webpack-node-externals');
 
-const isProduction = process.env.NODE_ENV === 'production';
-
 const sls = {
 	entry: slsw.lib.entries,
 	target: 'node',
-	mode: isProduction ? 'production' : 'development',
+	mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
 	output: {
 		libraryTarget: 'commonjs2',
 		path: path.resolve(__dirname, 'dist'),
 		filename: '[name].js',
 	},
+	devtool: slsw.lib.webpack.isLocal ? 'cheap-eval-source-map' : 'source-map',
 	stats: 'minimal',
-	externals: [nodeExternals()],
+	externals: slsw.lib.webpack.isLocal
+		? [nodeExternals()]
+		: { 'aws-sdk': 'aws-sdk' },
 	performance: {
 		hints: false,
 	},
 	resolve: {
 		extensions: ['.js', '.jsx'],
+		alias: {
+			'@financial-times/runbook.md-parser': path.resolve(
+				__dirname,
+				'../../libraries/parser/',
+			),
+		},
 	},
 	module: {
 		rules: [

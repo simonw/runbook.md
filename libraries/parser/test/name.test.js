@@ -1,8 +1,17 @@
-const runbookmd = require('..');
-const here = require('outdent').default;
+const schema = require('@financial-times/biz-ops-schema');
+const { default: here } = require('outdent');
+const runbookMd = require('..');
+
+schema.configure({
+	baseUrl: process.env.SCHEMA_BASE_URL,
+	updateMode: 'stale',
+	logger: console,
+});
+
+const parser = runbookMd(schema);
 
 test('an h1 is parsed as name', async () => {
-	const { data, errors } = await runbookmd.parseRunbookString(here`
+	const { data, errors } = await parser.parseRunbookString(here`
 		# hello monkey
 	`);
 	expect(errors.length).toBe(0);
@@ -10,7 +19,7 @@ test('an h1 is parsed as name', async () => {
 });
 
 test('inline markdown in an H1 is an error', async () => {
-	const { data, errors } = await runbookmd.parseRunbookString(here`
+	const { data, errors } = await parser.parseRunbookString(here`
 		# Hello *monkey* _don't_ worry about a thing
 	`);
 	expect(errors.length).toBe(1);
@@ -18,13 +27,13 @@ test('inline markdown in an H1 is an error', async () => {
 });
 
 test('more than one h1 is an error', async () => {
-	const twoNames = await runbookmd.parseRunbookString(here`
+	const twoNames = await parser.parseRunbookString(here`
 		# hello monkey
 
 		# also this
 	`);
 
-	const nineNames = await runbookmd.parseRunbookString(here`
+	const nineNames = await parser.parseRunbookString(here`
 		# hello monkey
 		# bears
 		# also this
@@ -43,7 +52,7 @@ test('more than one h1 is an error', async () => {
 });
 
 test('no h1 is an error', async () => {
-	const { data, errors } = await runbookmd.parseRunbookString(here`
+	const { data, errors } = await parser.parseRunbookString(here`
 		wow
 	`);
 
@@ -52,7 +61,7 @@ test('no h1 is an error', async () => {
 });
 
 test.skip('content before an h1 is an error', async () => {
-	const { data, errors } = await runbookmd.parseRunbookString(here`
+	const { data, errors } = await parser.parseRunbookString(here`
 		wow
 		# hello
 	`);

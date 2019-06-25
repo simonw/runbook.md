@@ -1,8 +1,17 @@
-const runbookmd = require('..');
-const here = require('outdent').default;
+const schema = require('@financial-times/biz-ops-schema');
+const { default: here } = require('outdent');
+const runbookMd = require('..');
+
+schema.configure({
+	baseUrl: process.env.SCHEMA_BASE_URL,
+	updateMode: 'stale',
+	logger: console,
+});
+
+const parser = runbookMd(schema);
 
 test('a valid property name gets correctly coerced', async () => {
-	const { data } = await runbookmd.parseRunbookString(here`
+	const { data } = await parser.parseRunbookString(here`
 		# name
 
 		## Contains personal data
@@ -13,7 +22,7 @@ test('a valid property name gets correctly coerced', async () => {
 });
 
 test('an invalid property name prints an error', async () => {
-	const { data, errors } = await runbookmd.parseRunbookString(here`
+	const { data, errors } = await parser.parseRunbookString(here`
 		# name
 
 		## Contains big monkey

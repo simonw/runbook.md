@@ -1,7 +1,7 @@
 jest.mock('../src/lib/external-apis');
 jest.mock('../src/lib/code-validation');
 
-const runbookMd = require('@financial-times/runbook.md-parser');
+const runbookMd = require('../src/lib/parser');
 const externalApis = require('../src/lib/external-apis');
 const bizOpsValidation = require('../src/lib/code-validation');
 

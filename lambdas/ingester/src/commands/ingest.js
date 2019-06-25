@@ -1,4 +1,4 @@
-const runbookMd = require('@financial-times/runbook.md-parser');
+const runbookMd = require('../lib/parser');
 const { validate, updateBizOps } = require('../lib/external-apis');
 const { validateCodesAgainstBizOps } = require('../lib/code-validation');
 

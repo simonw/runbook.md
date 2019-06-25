@@ -1,8 +1,17 @@
-const runbookmd = require('..');
-const here = require('outdent').default;
+const schema = require('@financial-times/biz-ops-schema');
+const { default: here } = require('outdent');
+const runbookMd = require('..');
+
+schema.configure({
+	baseUrl: process.env.SCHEMA_BASE_URL,
+	updateMode: 'stale',
+	logger: console,
+});
+
+const parser = runbookMd(schema);
 
 test('boolean types are coerced to boolean', async () => {
-	const { data } = await runbookmd.parseRunbookString(here`
+	const { data } = await parser.parseRunbookString(here`
 		# name
 
 		## Contains personal data
@@ -29,7 +38,7 @@ test('boolean types are coerced to boolean', async () => {
 });
 
 test('boolean fields with non-boolean contents are errors', async () => {
-	const { data, errors } = await runbookmd.parseRunbookString(here`
+	const { data, errors } = await parser.parseRunbookString(here`
 		# name
 
 		## Contains personal data
@@ -45,7 +54,7 @@ test('boolean fields with non-boolean contents are errors', async () => {
 });
 
 test('string types are coerced to string', async () => {
-	const { data } = await runbookmd.parseRunbookString(here`
+	const { data } = await parser.parseRunbookString(here`
 		# name
 
 		## more information
@@ -62,7 +71,7 @@ test('string types are coerced to string', async () => {
 });
 
 test('enums types correctly return their value', async () => {
-	const { data } = await runbookmd.parseRunbookString(here`
+	const { data } = await parser.parseRunbookString(here`
 		# name
 
 		## Service tier
@@ -74,7 +83,7 @@ test('enums types correctly return their value', async () => {
 });
 
 test('enums types with incorrect values produce error', async () => {
-	const { data, errors } = await runbookmd.parseRunbookString(here`
+	const { data, errors } = await parser.parseRunbookString(here`
 		# name
 
 		## Service tier
@@ -91,7 +100,7 @@ test('enums types with incorrect values produce error', async () => {
 
 // Before this test, we had links coming out wrapped in triangle brackets
 test('urls should stay urls', async () => {
-	const { data } = await runbookmd.parseRunbookString(here`
+	const { data } = await parser.parseRunbookString(here`
 		# name
 
 		## primary url
@@ -103,7 +112,7 @@ test('urls should stay urls', async () => {
 });
 
 test('nested fields are coerced to string (the code)', async () => {
-	const { data } = await runbookmd.parseRunbookString(here`
+	const { data } = await parser.parseRunbookString(here`
 		# name
 
 		## technical owner
@@ -115,7 +124,7 @@ test('nested fields are coerced to string (the code)', async () => {
 });
 
 test('properties with hasMany turn bulleted lists into arrays', async () => {
-	const { data, errors } = await runbookmd.parseRunbookString(here`
+	const { data, errors } = await parser.parseRunbookString(here`
 		# name
 
 		## known about by
@@ -139,7 +148,7 @@ test('properties with hasMany turn bulleted lists into arrays', async () => {
 });
 
 test('properties with hasMany must be bulleted lists', async () => {
-	const { errors } = await runbookmd.parseRunbookString(here`
+	const { errors } = await parser.parseRunbookString(here`
 		# name
 
 		## known about by
@@ -155,7 +164,7 @@ test('properties with hasMany must be bulleted lists', async () => {
 });
 
 test('properties without hasMany must not be bulleted lists', async () => {
-	const { errors } = await runbookmd.parseRunbookString(here`
+	const { errors } = await parser.parseRunbookString(here`
 		# name
 
 		## primary url
@@ -171,7 +180,7 @@ test('properties without hasMany must not be bulleted lists', async () => {
 });
 
 test('subdocuments have their headers reduced two levels', async () => {
-	const { data } = await runbookmd.parseRunbookString(here`
+	const { data } = await parser.parseRunbookString(here`
 		# name
 
 		## more information
@@ -187,7 +196,7 @@ test('subdocuments have their headers reduced two levels', async () => {
 
 test('date fields are coerced to iso strings', async () => {
 	const naiveJavaScriptIsoStringRegex = /^\d{4}(?:-\d{2}){2}T(?:\d{2}:){2}\d{2}\.\d{3}Z$/;
-	const { data } = await runbookmd.parseRunbookString(here`
+	const { data } = await parser.parseRunbookString(here`
 		# name
 
 		## last review date
@@ -199,7 +208,7 @@ test('date fields are coerced to iso strings', async () => {
 });
 
 test('date fields keep the correct date', async () => {
-	const { data } = await runbookmd.parseRunbookString(here`
+	const { data } = await parser.parseRunbookString(here`
 		# name
 
 		## last review date
@@ -216,7 +225,7 @@ test('date fields keep the correct date', async () => {
 });
 
 test('date fields with bad dates are an error', async () => {
-	const { errors } = await runbookmd.parseRunbookString(here`
+	const { errors } = await parser.parseRunbookString(here`
 		# name
 
 		## last review date

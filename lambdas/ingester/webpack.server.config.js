@@ -15,18 +15,12 @@ const sls = {
 		filename: '[name].js',
 	},
 	stats: 'minimal',
-	externals: isProduction ? [] : [nodeExternals()],
+	externals: [nodeExternals()],
 	performance: {
 		hints: false,
 	},
 	resolve: {
 		extensions: ['.js', '.jsx'],
-		alias: {
-			'@financial-times/runbook.md-parser': path.resolve(
-				__dirname,
-				'../../libraries/parser/',
-			),
-		},
 	},
 	module: {
 		rules: [

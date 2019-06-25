@@ -52,7 +52,7 @@ custom:
 
     webpack:
         webpackConfig: 'webpack.server.config.js'
-        includeModules: false
+        includeModules: true
         packager: 'npm'
         excludeFiles: test/*
 
@@ -83,7 +83,6 @@ plugins:
     - serverless-offline
 
 package:
-    individually: true
     exclude:
         - certs/**
         - coverage/**

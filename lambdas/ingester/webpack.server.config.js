@@ -3,17 +3,19 @@ const path = require('path');
 const slsw = require('serverless-webpack');
 const nodeExternals = require('webpack-node-externals');
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const sls = {
 	entry: slsw.lib.entries,
 	target: 'node',
-	mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
+	mode: isProduction ? 'production' : 'development',
 	output: {
 		libraryTarget: 'commonjs2',
 		path: path.resolve(__dirname, 'dist'),
 		filename: '[name].js',
 	},
 	stats: 'minimal',
-	externals: slsw.lib.webpack.isLocal ? [nodeExternals()] : [],
+	externals: isProduction ? [] : [nodeExternals()],
 	performance: {
 		hints: false,
 	},

@@ -1,14 +1,7 @@
 const { h, Fragment } = require('hyperons');
 const config = require('../../lib/config');
-// locally webpack manifest is not created
-const webpackManifest = config.get('IS_LAMBDA')
-	? // built resource, so doesn't exist in local dev
-	  // eslint-disable-next-line import/no-unresolved
-	  require('../../../dist/browser/manifest.json')
-	: {
-			'main.css': 'main.css',
-			'main.js': 'main.js',
-	  };
+
+const webpackManifest = require('../../assets/manifest.json');
 
 // TODO serve as /statics in prod
 const getPathToStaticAsset = fileName =>

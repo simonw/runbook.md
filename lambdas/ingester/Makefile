@@ -7,7 +7,7 @@ PRODUCT_NAME=biz-ops
 serverless-offline:
 	serverless offline --stage test start
 
-deploy: build-statics upload-statics transpile deploy-aws
+deploy: build-statics move-asset-manifest upload-statics transpile deploy-aws
 
 upload-statics:
 	aws s3 sync \
@@ -31,4 +31,7 @@ build-statics:
 	fi
 
 run: clean
-	@concurrently "make build-statics" "make transpile" "make serverless-offline"
+	@concurrently "make build-statics" "make serverless-offline"
+
+move-asset-manifest:
+	-f "./dist/browser/manifest.json" ] && mv "./dist/browser/manifest.json" /src/assets/

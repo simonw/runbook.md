@@ -7,7 +7,7 @@ PRODUCT_NAME=biz-ops
 serverless-offline:
 	serverless offline --stage test start
 
-deploy: build-statics move-asset-manifest upload-statics transpile deploy-aws
+deploy: build-statics move-asset-manifest upload-statics deploy-aws
 
 upload-statics:
 	aws s3 sync \
@@ -22,7 +22,10 @@ clean:
 	rm -rf dist/
 
 transpile:
-	serverless webpack
+	@if [ -z $(CI) ]; \
+		then serverless webpack; \
+		else serverless webpack --mode production; \
+	fi
 
 build-statics:
 	@if [ -z $(CI) ]; \

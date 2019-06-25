@@ -13,17 +13,24 @@ const sls = {
 		filename: '[name].js',
 	},
 	stats: 'minimal',
-	externals: [nodeExternals()],
+	externals: slsw.lib.webpack.isLocal ? [nodeExternals()] : [],
 	performance: {
 		hints: false,
 	},
 	resolve: {
 		extensions: ['.js', '.jsx'],
+		alias: {
+			'@financial-times/runbook.md-parser': path.resolve(
+				__dirname,
+				'../../libraries/parser/',
+			),
+		},
 	},
 	module: {
 		rules: [
 			{
 				test: /\.jsx?$/,
+				exclude: [/node_modules/],
 				use: {
 					loader: 'babel-loader',
 					options: {

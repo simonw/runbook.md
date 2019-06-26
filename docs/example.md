@@ -48,12 +48,6 @@ False
 
 Here are some details about the architecture of the system.
 
-## dependencies
-
--   sub-system-one
--   sub-system-two
--   sub-system-three
-
 ## replaces
 
 -   previous-system

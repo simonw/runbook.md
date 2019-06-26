@@ -19,7 +19,7 @@ const transformIngestedDetails = (
 });
 
 const decorateError = props => {
-	const error = new Error(props.message);
+	const error = new Error();
 	Object.assign(error, { ...props });
 	return error;
 };

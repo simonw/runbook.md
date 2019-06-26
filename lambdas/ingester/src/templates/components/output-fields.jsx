@@ -31,7 +31,7 @@ exports.UpdatedFields = ({ data }) => {
 		rows: Object.entries(data),
 	};
 	return (
-		<div className="parsed-data">
+		<div className="updated-fields">
 			<Table {...tableProps} />
 		</div>
 	);
@@ -41,10 +41,7 @@ exports.ParseSuccess = ({ data }) => {
 	const tableProps = {
 		caption: 'Parsed Successfully',
 		columns: ['Property', 'Value'],
-		rows: Object.entries(data).map(([name, value]) => [
-			name,
-			JSON.stringify(value),
-		]),
+		rows: Object.entries(data),
 	};
 	return (
 		<div className="parsed-data">
@@ -58,7 +55,7 @@ exports.ParseErrors = ({ errors }) => {
 		caption: 'Parse Errors',
 		columns: ['Message'],
 		rows: errors.map(({ line, message }) => [
-			line ? `${message} on or around line ${line}` : line,
+			line ? `${message} on or around line ${line}` : message,
 		]),
 	};
 	return (
@@ -76,7 +73,7 @@ exports.ValidationErrors = ({ errors }) => {
 			facet,
 			{
 				props: { className: 'with-line-breaks' },
-				value: messages.join('\n'),
+				value: messages,
 			},
 		]),
 	};

@@ -10,27 +10,29 @@ exports.Table = ({ caption, columns, rows }) => (
 		</caption>
 		<thead>
 			<tr>
-				{columns.forEach(column =>
-					column.props && column.value ? (
-						<th {...column.props}>{column.value}</th>
-					) : (
-						<th scope="col" role="columnheader">
-							{column}
-						</th>
-					),
-				)}
+				{columns &&
+					columns.forEach(column =>
+						column.props && column.value ? (
+							<th {...column.props}>{column.value}</th>
+						) : (
+							<th scope="col" role="columnheader">
+								{column}
+							</th>
+						),
+					)}
 			</tr>
 		</thead>
 		<tbody>
 			{rows.forEach(row => (
 				<tr>
-					{row.forEach(cell =>
-						cell.props && cell.value ? (
-							<td {...cell.props}>{cell.value}</td>
-						) : (
-							<td>{cell}</td>
-						),
-					)}
+					{row &&
+						row.forEach(cell =>
+							cell && cell.props && cell.value ? (
+								<td {...cell.props}>{cell.value}</td>
+							) : (
+								cell && <td>{cell}</td>
+							),
+						)}
 				</tr>
 			))}
 		</tbody>

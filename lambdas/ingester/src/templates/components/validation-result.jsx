@@ -21,7 +21,7 @@ exports.ValidationResult = ({
 	updatedFields = {},
 }) => (
 	<Fragment>
-		<h2 id="runbook-input">Validation Result</h2>
+		<h2 id="validation-result">Validation Result</h2>
 		<div className="o-grid-row fullwidth with-margin-bottom">
 			<div data-o-grid-colspan="12">
 				{message && message.length > 0 && (

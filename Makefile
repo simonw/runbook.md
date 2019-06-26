@@ -30,5 +30,5 @@ test:
 ifneq ($(CI),)
 	jest
 else
-	jest --watch
+	jest --watchAll
 endif

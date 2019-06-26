@@ -31,6 +31,29 @@ support-team
 -   ex-team-member
 -   another-ex-team-member
 
+## firstLineTroubleshooting
+
+Here are some details to explain how the **first line** support team can resolve issues with the system when it is running in production.
+Feel free to use paragraphs and other formatting techniques.
+
+## secondLineTroubleshooting
+
+Here are some details to explain how the **second line** support team can resolve issues with the system when it is running in production.
+Feel free to use paragraphs and other formatting techniques.
+
+## moreInformation
+
+This section should be used to capture any additional information that would otherwise have over extended the description or polluted the troubleshooting.
+
+## bespokeMonitoring
+
+Here I am indicating there there is no bespoke monitoring - instead of leaving the text blank
+
+## healthchecks
+
+-   system-eu-health
+-   system-us-health
+
 ## containsPersonalData
 
 True
@@ -131,26 +154,3 @@ Key Rotation:
 -   Step 1
 -   Step 2
 -   Step 3
-
-## bespokeMonitoring
-
-Here I am indicating there there is no bespoke monitoring - instead of leaving the text blank
-
-## healthchecks
-
--   system-eu-health
--   system-us-health
-
-## firstLineTroubleshooting
-
-Here are some details to explain how the **first line** support team can resolve issues with the system when it is running in production.
-Feel free to use paragraphs and other formatting techniques.
-
-## secondLineTroubleshooting
-
-Here are some details to explain how the **second line** support team can resolve issues with the system when it is running in production.
-Feel free to use paragraphs and other formatting techniques.
-
-## moreInformation
-
-This section should be used to capture any additional information that would otherwise have over extended the description or polluted the troucbleshooting.

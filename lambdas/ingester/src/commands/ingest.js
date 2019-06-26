@@ -56,7 +56,7 @@ const ingest = async (username, payload) => {
 
 	const details = transformIngestedDetails(parseResult, validationResult);
 
-	if (!writeToBizOps || writeToBizOps === false) {
+	if (!writeToBizOps || writeToBizOps === 'no') {
 		return {
 			message:
 				'Parse & Validation Complete. Biz Ops Was NOT Updated as you did not enable the writeToBizOps flag.',

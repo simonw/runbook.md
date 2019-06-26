@@ -25,8 +25,7 @@ const formOutputHandler = async event => {
 
 	try {
 		logger.info({ event: 'MANUAL_RUNBOOK_CHECK_START' });
-		const ingestResponse = await ingest(event.s3oUsername, jsonFormData);
-		const ingestJson = await ingestResponse.json();
+		const ingestJson = await ingest(event.s3oUsername, jsonFormData);
 		logger.info({
 			event: 'MANUAL_RUNBOOK_CHECK_SUCCESFUL',
 			response: ingestJson,

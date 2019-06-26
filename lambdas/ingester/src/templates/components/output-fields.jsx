@@ -3,7 +3,7 @@ const { Table } = require('./table');
 
 exports.Message = ({ status, message, linkText, linkUrl }) => (
 	<div
-		className={`o-message o-message--alert ${
+		className={`o-message with-margin-bottom o-message--alert ${
 			status === 200 ? 'o-message--success' : 'o-message--error'
 		}`}
 		data-o-component="o-message"

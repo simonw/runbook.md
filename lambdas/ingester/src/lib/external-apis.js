@@ -33,12 +33,20 @@ const callExternalApi = async ({
 	return { status: fetchResponse.status, json: await fetchResponse.json() };
 };
 
+const nestedFields = ['deliveryTeam', 'supportTeam'];
+
 const validate = async request =>
 	callExternalApi({
 		name: 'SOS validate',
 		method: 'POST',
 		url: `${process.env.SOS_URL}/api/v1/validate`,
 		payload: request,
+	}).then(({ status, json }) => {
+		// HACK - prevents showing errors for related fields
+		nestedFields.forEach(name => {
+			delete json.errorMessages[name];
+		});
+		return { status, json };
 	});
 
 const updateBizOps = async (username, apiKey, systemCode, content) => {

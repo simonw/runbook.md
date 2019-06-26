@@ -1,4 +1,5 @@
 const { h } = require('hyperons');
+const { markdownToHTML } = require('../../lib/markdown-parser');
 
 const List = ({ itemArray }) => itemArray.map(item => <li>{item}</li>);
 
@@ -14,7 +15,18 @@ const Cell = ({ contents, props = {} }) => {
 		return <Cell contents={contents.value} props={contents.props} />;
 	}
 	if (typeof contents === 'string') {
-		return <td {...props}>{contents}</td>;
+		// crude way of checking for markdown input
+		return /\\n|\*/.test(contents) ? (
+			<td
+				{...props}
+				// eslint-disable-next-line react/no-danger
+				dangerouslySetInnerHTML={markdownToHTML(contents)}
+			>
+				{JSON.stringify(markdownToHTML(contents))}
+			</td>
+		) : (
+			<td {...props}>{contents}</td>
+		);
 	}
 	if (typeof contents === 'boolean') {
 		return <td {...props}>{contents ? 'Yes' : 'No'}</td>;

@@ -1,4 +1,3 @@
-@import 'meter';
 @import 'manualEntryForm';
 
 .o-header-services__title small {
@@ -40,4 +39,8 @@
 
 .fullwidth {
 	width: 100%;
+}
+
+.with-margin-bottom {
+	margin-bottom: 2em;
 }

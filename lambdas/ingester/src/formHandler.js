@@ -1,53 +1,52 @@
 const logger = require('@financial-times/lambda-logger');
-const httpError = require('http-errors');
 const querystring = require('qs');
-const response = require('./lib/response');
-const { createLambda } = require('./lib/lambda');
-const template = require('./templates/form-input-page');
-const { ingest } = require('./commands/ingest');
-const { default: exampleContent } = require('../../../docs/example.md');
 
-const displayForm = event => {
-	logger.info(
-		{ event: 'GET RUNBOOK-md INGEST FORM' },
-		'Request for runbook.md form',
-	);
-	return response.page(template, { exampleContent, layout: 'docs' }, event);
+const { renderPage } = require('./lib/response');
+const { createLambda } = require('./lib/lambda');
+
+const { ingest } = require('./commands/ingest');
+
+const template = require('./templates/form-input-page');
+const { default: placeholder } = require('../../../docs/example.md');
+
+const formHandler = event => {
+	logger.info({ event: 'RUNBOOK_INGEST_FORM_REQUEST' });
+	return renderPage(template, { layout: 'docs', placeholder }, event);
 };
 
-const handleForm = async event => {
-	logger.info(
-		{ event: 'Received RUNBOOK-md INGEST FORM' },
-		'Result of runbook.md form',
-	);
+const formOutputHandler = async event => {
+	logger.info({ event: 'RUNBOOK_INGEST_FORM_RESPONSE' });
+
 	const formData = event.body;
 	const jsonFormData = querystring.parse(formData);
-	jsonFormData.writeToBizOps = jsonFormData.writeToBizOps === 'true';
+	jsonFormData.writeToBizOps = jsonFormData.writeToBizOps === 'yes';
 
 	const responseProperties = { status: 200 };
 
 	try {
-		logger.info({ event: 'RUNBOOK_MANUAL_CHECK_START', jsonFormData });
+		logger.info({ event: 'MANUAL_RUNBOOK_CHECK_START' });
 		const ingestResponse = await ingest(event.s3oUsername, jsonFormData);
 		const ingestJson = await ingestResponse.json();
 		logger.info({
-			event: 'RUNBOOK_MANUAL_CHECK_SUCCESFUL',
+			event: 'MANUAL_RUNBOOK_CHECK_SUCCESFUL',
 			response: ingestJson,
 		});
 		Object.assign(responseProperties, ingestJson);
 	} catch (error) {
-		Object.assign(responseProperties, { ...error });
+		Object.assign(responseProperties, { status: 400, ...error });
 		logger.info({
-			event: 'RUNBOOK_MANUAL_CHECK_FAILED',
+			event: 'MANUAL_RUNBOOK_CHECK_FAILED',
 			error: { ...error },
 		});
 	}
 
-	return response.page(
+	return renderPage(
 		template,
 		{
+			layout: 'docs',
 			status: responseProperties.status,
 			message: responseProperties.message,
+			readOnly: true,
 			...jsonFormData,
 			...responseProperties.details,
 		},
@@ -55,14 +54,7 @@ const handleForm = async event => {
 	);
 };
 
-const handler = async event => {
-	if (event.httpMethod === 'GET') {
-		return displayForm(event);
-	}
-	if (event.httpMethod === 'POST') {
-		return handleForm(event);
-	}
-	throw httpError(405, 'Method Not Allowed');
-};
+const handler = async event =>
+	event.httpMethod === 'POST' ? formOutputHandler(event) : formHandler(event);
 
 exports.handler = createLambda(handler);

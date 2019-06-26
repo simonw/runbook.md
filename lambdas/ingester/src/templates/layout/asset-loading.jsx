@@ -68,15 +68,16 @@ const HeadAssets = () => (
 			sizes="180x180"
 			href="https://www.ft.com/__origami/service/image/v2/images/raw/ftlogo-v1%3Abrand-ft-logo-square?source=biz-ops-admin&amp;width=180&amp;height=180&amp;format=png"
 		/>
-		<link rel="stylesheet" href={origamiCssUrl} />
+		<link href={origamiCssUrl} rel="stylesheet" />
 		<link href={getPathToStaticAsset('main.css')} rel="stylesheet" />
 	</Fragment>
 );
+
 const TailAssets = () => (
 	<Fragment>
 		<script src={getPathToStaticAsset('main.js')} defer />
-
 		<script defer src={origamiJsUrl} />
 	</Fragment>
 );
+
 module.exports = { HeadAssets, TailAssets };

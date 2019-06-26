@@ -23,7 +23,7 @@ const json = (statusCode = 200, body) => ({
 const errorHtml = errorResponse(json);
 const errorJson = errorResponse(json);
 
-const page = (template, data, event, statusCode = 200) => {
+const renderPage = (template, data, event, statusCode = 200) => {
 	const user = event && event.isSignedIn && event.s3oUsername;
 	return {
 		statusCode,
@@ -52,5 +52,5 @@ module.exports = {
 	errorHtml,
 	errorJson,
 	json,
-	page,
+	renderPage,
 };

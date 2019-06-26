@@ -34,7 +34,7 @@ build-production-assets:
 	webpack --config webpack.browser.config.js --mode production;
 
 build-statics:
-	@if [ -z !$(CI) ]; \
+	@if [ -z $(CI) ]; \
 		then webpack-dev-server --config webpack.browser.config.js --mode development; \
 		else make build-production-assets; \
 	fi

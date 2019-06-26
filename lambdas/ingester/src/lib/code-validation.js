@@ -1,4 +1,4 @@
-const { schema } = require('./get-configured-schema');
+const schema = require('./get-configured-schema');
 const { queryBizOps } = require('./external-apis');
 
 const pushUnique = (accumulator, valuesToAdd) => {

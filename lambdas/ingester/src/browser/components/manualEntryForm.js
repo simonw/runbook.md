@@ -76,6 +76,7 @@ module.exports = function(form) {
 			toggleBizOpsWriteMode(toggle, toggleFields);
 		}
 	});
+
 	submitButton.addEventListener('click', event => {
 		validateSubmission(event, form);
 	});

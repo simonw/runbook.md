@@ -1,5 +1,11 @@
 .runbook-form {
-	&__submit--error {
+	&__markdown-input textarea {
+		font-family: 'Lucida Console', Monaco, monospace;
+		font-size: 0.8em;
+	}
+
+	p.runbook-form__submit--error {
 		display: none;
+		color: #b30000;
 	}
 }

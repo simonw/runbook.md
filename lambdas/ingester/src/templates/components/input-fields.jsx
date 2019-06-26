@@ -1,66 +1,7 @@
 const { h } = require('hyperons');
-
-const FieldMeta = ({ title, info, id }) => (
-	<span className="o-forms-title" aria-hidden="true">
-		<span className="o-forms-title__main" id={`${id}-title`}>
-			{title}
-		</span>
-		{info && (
-			<span className="o-forms-title__prompt" id={`${id}-info`}>
-				{info}
-			</span>
-		)}
-	</span>
-);
-
-const FormField = ({ title, info, id, content, optional }) => (
-	<div
-		className={`validation-${id} o-forms-field ${
-			optional ? 'o-forms-field--optional' : ''
-		}`}
-		aria-labelledby={`${id}-title`}
-		aria-describedby={`${id}-info`}
-	>
-		{title && info && <FieldMeta id={id} title={title} info={info} />}
-		{content}
-	</div>
-);
-
-const TextInput = ({ name, value }) => (
-	<span className="o-forms-input o-forms-input--text">
-		<input
-			type="text"
-			className="o-forms__text"
-			name={name}
-			id={name}
-			value={value}
-			required
-		/>
-		<span className="o-forms-input__error">Please fill out this field</span>
-	</span>
-);
-
-const RadioButton = ({ id, value, label, checked }) => (
-	<label>
-		<input
-			type="radio"
-			id={`${id}-${value}`}
-			name={id}
-			value={value}
-			aria-label={label}
-			checked={checked ? 'checked' : null}
-			required
-		/>
-		<span
-			className={`o-forms-input__label ${
-				checked ? 'o-forms-input__label--negative' : ''
-			}`}
-			aria-hidden="true"
-		>
-			{label}
-		</span>
-	</label>
-);
+const { TextInput } = require('./text-input');
+const { RadioButton } = require('./radio-button');
+const { FormField } = require('./form-field');
 
 const SystemCode = ({ systemCode }) => {
 	const props = {
@@ -120,7 +61,7 @@ const WriteFlag = ({ writeToBizOps }) => {
 	return <FormField {...props} />;
 };
 
-const RunbookEntry = ({ exampleContent, content }) => {
+const RunbookEntry = ({ placeholder, content }) => {
 	const props = {
 		title: 'Your RUNBOOK.MD',
 		info: `Paste or type the content of your runbook here, in Markdown.`,
@@ -128,14 +69,14 @@ const RunbookEntry = ({ exampleContent, content }) => {
 	};
 
 	props.content = (
-		<span className="o-forms-input o-forms-input--textarea">
+		<span className="o-forms-input o-forms-input--textarea runbook-form__markdown-input">
 			{' '}
 			<textarea
 				className="o-forms__textarea"
 				name="content"
 				id="content"
 				rows="20"
-				placeholder={exampleContent}
+				placeholder={placeholder}
 			>
 				{content}
 			</textarea>

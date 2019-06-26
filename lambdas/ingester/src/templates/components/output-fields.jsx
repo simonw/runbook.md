@@ -1,6 +1,7 @@
 const { h } = require('hyperons');
+const { Table } = require('./table');
 
-const Message = ({ status, message, linkText, linkUrl }) => (
+exports.Message = ({ status, message, linkText, linkUrl }) => (
 	<div
 		className={`o-message o-message--alert ${
 			status === 200 ? 'o-message--success' : 'o-message--error'
@@ -23,147 +24,65 @@ const Message = ({ status, message, linkText, linkUrl }) => (
 	</div>
 );
 
-const UpdatedFields = ({ data }) => (
-	<div className="parsed-data">
-		<table
-			className="o-table o-table--horizontal-lines "
-			data-o-component="o-table"
-		>
-			<caption className="o-table__caption">
-				<h2 className="o-typography-heading-level-2">
-					Updated Biz Ops Fields
-				</h2>
-			</caption>
-			<thead>
-				<tr>
-					<th scope="col" role="columnheader">
-						Property
-					</th>
-					<th scope="col" role="columnheader">
-						Value
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				{Object.entries(data).map(([property, value]) => (
-					<tr>
-						<td>{property}</td>
-						<td>{value}</td>
-					</tr>
-				))}
-			</tbody>
-		</table>
-	</div>
-);
-
-const ParseSuccess = ({ data }) => (
-	<div className="parsed-data">
-		<table
-			className="o-table o-table--horizontal-lines "
-			data-o-component="o-table"
-		>
-			<caption className="o-table__caption">
-				<h2 className="o-typography-heading-level-2">
-					Parse Successes
-				</h2>
-			</caption>
-			<thead>
-				<tr>
-					<th scope="col" role="columnheader">
-						Property
-					</th>
-					<th scope="col" role="columnheader">
-						Value
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				{Object.entries(data).map(([name, value]) => (
-					<tr>
-						<td>{name}</td>
-						<td>{JSON.stringify(value)}</td>
-					</tr>
-				))}
-			</tbody>
-		</table>
-	</div>
-);
-
-const ParseError = ({ error }) => {
-	if (error.line) {
-		return `${error.message} on or around line ${error.line}`;
-	}
-	return error.message;
+exports.UpdatedFields = ({ data }) => {
+	const tableProps = {
+		caption: 'Updated Biz Ops Fields',
+		columns: ['Property', 'Value'],
+		rows: Object.entries(data),
+	};
+	return (
+		<div className="parsed-data">
+			<Table {...tableProps} />
+		</div>
+	);
 };
 
-const ParseErrors = ({ errors }) => (
-	<div className="parsed-errors">
-		<table
-			className="o-table o-table--horizontal-lines "
-			data-o-component="o-table"
-		>
-			<caption className="o-table__caption">
-				<h2 className="o-typography-heading-level-2">Parse Errors</h2>
-			</caption>
-			<thead>
-				<tr>
-					<th scope="col" role="columnheader">
-						Message
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				{errors.map(error => (
-					<tr>
-						<td>
-							<ParseError error={error} />
-						</td>
-					</tr>
-				))}
-			</tbody>
-		</table>
-	</div>
-);
+exports.ParseSuccess = ({ data }) => {
+	const tableProps = {
+		caption: 'Parsed Successfully',
+		columns: ['Property', 'Value'],
+		rows: Object.entries(data).map(([name, value]) => [
+			name,
+			JSON.stringify(value),
+		]),
+	};
+	return (
+		<div className="parsed-data">
+			<Table {...tableProps} />
+		</div>
+	);
+};
 
-const ValidationErrors = ({ errors }) => (
-	<div className="validation-errors">
-		<table
-			className="o-table o-table--horizontal-lines "
-			data-o-component="o-table"
-		>
-			<caption className="o-table__caption">
-				<h2 className="o-typography-heading-level-2">
-					Validation Errors
-				</h2>
-			</caption>
-			<thead>
-				<tr>
-					<th scope="col" role="columnheader">
-						Facet
-					</th>
-					<th scope="col" role="columnheader">
-						Errors
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				{Object.entries(errors).map(([facet, messages]) => (
-					<tr>
-						<td>{facet}</td>
-						<td className="with-line-breaks">
-							{messages.join('\n')}
-						</td>
-					</tr>
-				))}
-			</tbody>
-		</table>
-	</div>
-);
+exports.ParseErrors = ({ errors }) => {
+	const tableProps = {
+		caption: 'Parse Errors',
+		columns: ['Message'],
+		rows: errors.map(({ line, message }) => [
+			line ? `${message} on or around line ${line}` : line,
+		]),
+	};
+	return (
+		<div className="parsed-errors">
+			<Table {...tableProps} />
+		</div>
+	);
+};
 
-module.exports = {
-	Message,
-	ParseSuccess,
-	ParseErrors,
-	UpdatedFields,
-	ValidationErrors,
+exports.ValidationErrors = ({ errors }) => {
+	const tableProps = {
+		caption: 'Validation Errors',
+		columns: ['Facet', 'Errors'],
+		rows: Object.entries(errors).map(([facet, messages]) => [
+			facet,
+			{
+				props: { className: 'with-line-breaks' },
+				value: messages.join('\n'),
+			},
+		]),
+	};
+	return (
+		<div className="validation-errors">
+			<Table {...tableProps} />
+		</div>
+	);
 };

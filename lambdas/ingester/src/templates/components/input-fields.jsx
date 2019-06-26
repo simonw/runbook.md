@@ -1,4 +1,5 @@
 const { h } = require('hyperons');
+const addLineNumbers = require('add-line-numbers');
 const { TextInput } = require('./text-input');
 const { RadioButton } = require('./radio-button');
 const { FormField } = require('./form-field');
@@ -61,7 +62,7 @@ const WriteFlag = ({ writeToBizOps }) => {
 	return <FormField {...props} />;
 };
 
-const RunbookEntry = ({ placeholder, content }) => {
+const RunbookEntry = ({ placeholder, content, readOnly }) => {
 	const props = {
 		title: 'Your RUNBOOK.MD',
 		info: `Paste or type the content of your runbook here, in Markdown.`,
@@ -77,8 +78,10 @@ const RunbookEntry = ({ placeholder, content }) => {
 				id="content"
 				rows="20"
 				placeholder={placeholder}
+				data-original-content={content}
+				readOnly={readOnly}
 			>
-				{content}
+				{readOnly ? addLineNumbers(content) : content}
 			</textarea>
 		</span>
 	);

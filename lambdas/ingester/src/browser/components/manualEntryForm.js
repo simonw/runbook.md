@@ -1,3 +1,5 @@
+const addLineNumbers = require('add-line-numbers');
+
 function toggleBizOpsWriteMode(target, toggleFields) {
 	const display = target.value === 'yes' ? 'flex' : 'none';
 	toggleFields.forEach(field => {
@@ -20,11 +22,31 @@ function toggleErrorState(
 	errorMessage.style.display = isValid ? 'none' : 'flex';
 }
 
+function stripLineNumbers(target) {
+	if (target.dataset.originalContent) {
+		target.value = target.dataset.originalContent;
+		delete target.dataset.originalContent;
+		target.readOnly = false;
+	}
+}
+
+function showLineNumbers(target) {
+	if (target.value && target.value.length) {
+		// already has line numbers
+		if (/^\s*1:/.test(target.value)) {
+			return stripLineNumbers(target);
+		}
+		target.dataset.originalContent = target.value;
+		target.value = addLineNumbers(target.value);
+		target.readOnly = true;
+	}
+}
 async function submitForm(form) {
 	const content = form.querySelector('#content');
 	if (!content.value.length) {
 		content.value = content.placeholder;
 	}
+	stripLineNumbers(content);
 	// TODO: client-side only
 	form.submit();
 }
@@ -67,6 +89,7 @@ module.exports = function(form) {
 		form.querySelector('.validation-systemCode'),
 	];
 	const submitButton = form.querySelector('#submitRunbookForm');
+	const runbookContent = form.querySelector('#content');
 
 	bizOpsToggle.forEach(toggle => {
 		toggle.addEventListener('change', ({ target }) => {
@@ -80,4 +103,11 @@ module.exports = function(form) {
 	submitButton.addEventListener('click', event => {
 		validateSubmission(event, form);
 	});
+
+	runbookContent.addEventListener('focus', ({ target }) =>
+		stripLineNumbers(target),
+	);
+	runbookContent.addEventListener('blur', ({ target }) =>
+		showLineNumbers(target),
+	);
 };

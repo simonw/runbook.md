@@ -19,9 +19,17 @@ exports.ValidationResult = ({
 	parseErrors = [],
 	validationErrors = {},
 	updatedFields = {},
+	refreshLink,
 }) => (
 	<Fragment>
 		<h2 id="validation-result">Validation Result</h2>
+		{refreshLink && (
+			<aside>
+				<p>
+					<a href="/runbook.md">Click here</a> to validate another runbook.
+				</p>
+			</aside>
+		)}
 		<div className="o-grid-row fullwidth with-margin-bottom">
 			<div data-o-grid-colspan="12">
 				{message && message.length > 0 && (

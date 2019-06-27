@@ -33,6 +33,7 @@ const ValidateForm = ({
 			<h1 id="edit-form--title">Parse, Validate and Import</h1>
 			{readOnly && (
 				<ValidationResult
+					refreshLink
 					status={status}
 					systemCode={systemCode}
 					message={message}

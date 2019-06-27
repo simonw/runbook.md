@@ -32,3 +32,13 @@ ifneq ($(CI),)
 else
 	jest --watchAll
 endif
+
+create-database:
+	aws cloudformation create-stack \
+	--region eu-west-1 \
+	--stack-name biz-ops-runbooks-md-data \
+	--template-body file://$$(pwd)/cloudformation/dynamodb.yaml \
+	--tags Key=description,Value="Surveys how much time we spend yak-shaving and dealing with bugs" \
+	Key=systemCode,Value=yakfly \
+	Key=environment,Value=$$ENVIRONMENT_TAG \
+	Key=teamDL,Value=reliability.engineering@ft.com

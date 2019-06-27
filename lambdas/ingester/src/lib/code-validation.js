@@ -27,30 +27,34 @@ const getTypesAndCodesFromRelationships = (systemSchema, data) =>
 		return accumulator;
 	}, []);
 
-const buildGraphQLQuery = bizOpsCodes =>
-	`query getStuff {
-	${bizOpsCodes
-		.map(
-			({ type, code }) =>
-				`${type}_${code.replace(
-					/[-.]/g,
-					'_',
-				)}:${type} (code:"${code}") {code}`,
-		)
-		.join('\n')}
-	}`;
+const buildGraphQLQuery = bizOpsCodes => {
+	const propertyMappings = {};
+	const query = `query getStuff {
+		${bizOpsCodes
+			.map(({ type, code }) => {
+				const sanitizedCode = code.replace('-', '').replace(/\W/g, '');
+				propertyMappings[`${type}_${sanitizedCode}`] = { type, code };
+				return `${type}_${sanitizedCode}:${type} (code:"${code}") {code}`;
+			})
+			.join('\n')}
+		}`;
+	return { query, propertyMappings };
+};
 
-const formatBizOpsResponse = bizOpsResponse => {
+const formatBizOpsResponse = (bizOpsResponse, propertyMappings) => {
 	const bizOpsData = {};
 	const errors = [];
 	Object.entries(bizOpsResponse.data).forEach(([key, value]) => {
-		const [type, code] = key.split(/_(.+)/);
+		const { type, code } = propertyMappings[key];
 		if (value === null) {
 			errors.push({
 				message: `There is no ${type} with a code of ${code} stored within Biz Ops`,
 			});
 		} else {
-			bizOpsData[code] = value;
+			bizOpsData[key] = {
+				code,
+				value,
+			};
 		}
 	});
 	return { bizOpsData, errors };
@@ -65,13 +69,13 @@ const validateCodesAgainstBizOps = async (username, data) => {
 	if (!uniqueBizOpsCodes.length) {
 		return { bizOpsData: {}, errors: [] };
 	}
-	const query = buildGraphQLQuery(uniqueBizOpsCodes);
+	const { query, propertyMappings } = buildGraphQLQuery(uniqueBizOpsCodes);
 	const { json: bizOpsResponse } = await queryBizOps(
 		username,
 		process.env.BIZ_OPS_API_KEY,
 		query,
 	);
-	return formatBizOpsResponse(bizOpsResponse);
+	return formatBizOpsResponse(bizOpsResponse, propertyMappings);
 };
 
 module.exports = {

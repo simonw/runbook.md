@@ -23,7 +23,7 @@ const callExternalApi = async ({
 		);
 		throw httpError(
 			fetchResponse.status,
-			`Attempt to access ${name} ${url} ${options} failed with ${fetchResponse.statusText}`,
+			`Attempt to access ${name} ${url} failed with ${fetchResponse.statusText}`,
 		);
 	}
 	logger.info(

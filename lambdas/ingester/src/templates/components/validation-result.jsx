@@ -26,7 +26,8 @@ exports.ValidationResult = ({
 		{refreshLink && (
 			<aside>
 				<p>
-					<a href="/runbook.md">Click here</a> to validate another runbook.
+					<a href="/runbook.md">Click here</a> to validate another
+					runbook.
 				</p>
 			</aside>
 		)}

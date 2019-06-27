@@ -58,14 +58,6 @@ custom:
         keepOutputDirectory: true
 
 functions:
-    ingest:
-        description: Ingest a runbook.md
-        handler: src/ingestHandler.handler
-        timeout: 30
-        events:
-            - http:
-                  path: /ingest
-                  method: post
     form:
         description: GUI for driving ingestion of a runbook.md
         handler: src/formHandler.handler

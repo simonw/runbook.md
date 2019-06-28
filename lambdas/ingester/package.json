@@ -25,12 +25,15 @@
 		"@financial-times/lambda-logger": "^2.0.0",
 		"@financial-times/runbook.md-parser": "file:../../libraries/parser",
 		"@financial-times/s3o-lambda": "^2.0.3",
+		"@probot/serverless-lambda": "^0.3.0",
 		"add-line-numbers": "^1.0.1",
+		"aws-sdk": "^2.482.0",
 		"http-errors": "^1.7.2",
 		"hyperons": "^1.0.0-beta.2",
 		"isomorphic-fetch": "^2.2.1",
 		"lodash": "^4.17.11",
 		"marked": "^0.6.2",
+		"probot": "^9.2.15",
 		"qs": "^6.7.0"
 	},
 	"devDependencies": {

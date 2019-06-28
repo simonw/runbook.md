@@ -14,6 +14,7 @@ provider:
     timeout: 30
     deploymentBucket: artefacts.biz-ops-runbook-md.${env:AWS_ACCOUNT_ID}
     environment:
+        GITHUB_APP_ID: ${env:GITHUB_APP_ID}
         BIZ_OPS_API_URL: ${env:BIZ_OPS_API_URL}
         BIZ_OPS_API_KEY: ${env:BIZ_OPS_API_KEY}
         BIZ_OPS_URL: ${env:BIZ_OPS_URL}
@@ -25,8 +26,10 @@ provider:
         CONSOLE_LOG_LEVEL: info
         ENVIRONMENT: ${env:ENVIRONMENT}
         NODE_ENV: ${self:custom.${self:provider.stage}.NODE_ENV, 'production'}
+        GITHUB_PRIVATE_KEY_STRING: ${env:GITHUB_PRIVATE_KEY_STRING}
         STAGE: ${self:provider.stage}
         SYSTEM_CODE: ${self:service}
+        GITHUB_WEBHOOK_SECRET: ${env:GITHUB_WEBHOOK_SECRET}
 
 custom:
     alerts:
@@ -69,6 +72,23 @@ functions:
             - http:
                   path: /runbook.md
                   method: post
+    status:
+        description: Status page for GitHub checks
+        handler: src/statusPageHandler.handler
+        timeout: 30
+        events:
+            - http:
+                  path: /status/{owner}/{repo}/{hash}
+                  method: get
+    githubWebhook:
+        description: GitHub webhook responder
+        handler: src/githubWebhookHandler.handler
+        timeout: 30
+        events:
+            - http:
+                  path: /webhook
+                  method: post
+
 plugins:
     - serverless-plugin-aws-alerts
     - serverless-log-forwarding

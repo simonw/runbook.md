@@ -2,88 +2,88 @@
 
 Here is a long description of a system that contains the minimum detail that should be provided via a RUNBOOK.md file. The format includes the provision of text value, enum, single value and multiple value fields. Please try and avoid paragraphs as that longer content may belong in the other text fields which are contained below.
 
-## primaryURL
+## Primary URL
 
 https://www.sample.ft.com
 
-## serviceTier
+## Service Tier
 
 Bronze
 
-## lifecycleStage
+## Lifecycle Stage
 
 Preproduction
 
-## hostPlatform
+## Host Platform
 
 AWS
 
-## deliveredBy
+## Delivered By
 
 delivery-team
 
-## supportedBy
+## Supported By
 
 support-team
 
-## knownAboutBy
+## Known About By
 
 -   ex-team-member
 -   another-ex-team-member
 
-## firstLineTroubleshooting
+## First Line Troubleshooting
 
 Here are some details to explain how the **first line** support team can resolve issues with the system when it is running in production.
 Feel free to use paragraphs and other formatting techniques.
 
-## secondLineTroubleshooting
+## Second Line Troubleshooting
 
 Here are some details to explain how the **second line** support team can resolve issues with the system when it is running in production.
 Feel free to use paragraphs and other formatting techniques.
 
-## moreInformation
+## More Information
 
 This section should be used to capture any additional information that would otherwise have over extended the description or polluted the troubleshooting.
 
-## bespokeMonitoring
+## Bespoke Monitoring
 
 Here I am indicating there there is no bespoke monitoring - instead of leaving the text blank
 
-## healthchecks
+## Healthchecks
 
 -   system-eu-health
 -   system-us-health
 
-## containsPersonalData
+## Contains Personal Data
 
 True
 
-## containsSensitiveData
+## Contains Sensitive Data
 
 False
 
-## repositories
+## Repositories
 
 -   source-code-repo
 -   library-repo
 
-## architecture
+## Architecture
 
 Here are some details about the architecture of the system.
 
-## replaces
+## Replaces
 
 -   previous-system
 
-## failoverArchitectureType
+## Failover Architecture Type
 
 ActiveActive
 
-## failoverProcessType
+## Failover Process Type
 
 FullyAutomated
 
-## failbackProcessType
+## Failback Process Type
 
 PartiallyAutomated
 
@@ -103,11 +103,11 @@ Failback:
 -   Step 2
 -   Step 3.
 
-## dataRecoveryProcessType
+## Data Recovery Process Type
 
 Manual
 
-## dataRecoveryDetails
+## Data Recovery Details
 
 Please include some text, with paragraphs, to explain how the system's data is restored after failure.
 
@@ -117,11 +117,11 @@ Restore:
 -   Step 2
 -   Step 3
 
-## releaseProcessType
+## Release Process Type
 
 FullyAutomated
 
-## rollbackProcessType
+## Rollback Process Type
 
 Manual
 
@@ -141,11 +141,11 @@ Rollback:
 -   Step 2
 -   Step 3.
 
-## keyManagementProcessType
+## Key Management Process Type
 
 PartiallyAutomated
 
-## keyManagementDetails
+## Key Management Details
 
 Please include some text, with paragraphs, to explain how the system's keys are rotated.
 

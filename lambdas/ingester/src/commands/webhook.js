@@ -48,11 +48,19 @@ const command = async context => {
 
 	// get the git tree of the head commit
 	// https://octokit.github.io/rest.js/#octokit-routes-git-get-tree
-	const { tree } = await context.github.git.getTree({
+
+	const treePayload = await context.github.git.getTree({
 		owner,
 		repo,
 		tree_sha: treeId,
 		recursive: 1,
+	});
+	const { tree } = treePayload;
+	logger.info({
+		event: 'WEBHOOK_GET_TREE',
+		treePayload,
+		tree,
+		commitSha,
 	});
 
 	// get the runbook sha from the tree

@@ -236,6 +236,37 @@ test('date fields with bad dates are an error', async () => {
 	expect(errors).toHaveLength(1);
 
 	const [{ message }] = errors;
+
 	expect(message).toContain("mario's birthday");
 	expect(message).toContain('Date');
+});
+
+test('empty sections are an error', async () => {
+	const { data, errors } = await parser.parseRunbookString(here`
+		# name
+
+		## Contains personal data
+
+		## dependents
+
+		## more information
+
+		neat
+	`);
+
+	expect(data).toEqual({
+		name: 'name',
+		moreInformation: 'neat',
+	});
+
+	expect(errors).toEqual([
+		{
+			line: 3,
+			message: 'property "containsPersonalData" has no value',
+		},
+		{
+			line: 5,
+			message: 'property "dependents" has no value',
+		},
+	]);
 });

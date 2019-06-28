@@ -40,6 +40,17 @@ module.exports = function coerceBizopsPropertiesToType({
 		// we will specify only a code
 		const isNested = typeNames.has(node.propertyType);
 
+		const isEmpty = !flattenNodeToPlainString(node);
+
+		if (isEmpty) {
+			convertNodeToProblem({
+				node,
+				message: `property "${node.key}" has no value`,
+			});
+
+			return;
+		}
+
 		// If the propertyType is nested, or one of the primitive types, coerce it
 		if (propertyType in primitiveTypesMap || isNested) {
 			const [subdocument] = node.children;

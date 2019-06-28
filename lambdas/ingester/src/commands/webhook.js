@@ -103,7 +103,7 @@ const command = async context => {
 		try {
 			await context.github.repos.createStatus({
 				context: 'runbook.md',
-				description: 'Biz-Ops powered Runbook validation',
+				description: 'Biz-Ops Runbook validation',
 				owner,
 				repo,
 				sha: commitSha,
@@ -183,11 +183,10 @@ const command = async context => {
 		target_url: `${process.env.BIZ_OPS_URL}/status/${commitSha}`,
 		...{
 			success: {
-				description: 'Biz-Ops powered Runbook validation: passed',
+				description: 'Validation passed',
 			},
 			failure: {
-				description:
-					'Biz-Ops powered Runbook validation: runbook contains errors',
+				description: 'Runbook contains errors',
 			},
 		}[ingestResult.status],
 	};

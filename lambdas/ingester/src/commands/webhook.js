@@ -52,7 +52,7 @@ const command = async context => {
 		owner,
 		repo,
 		tree_sha: treeId,
-		recursive: true,
+		recursive: 1,
 	});
 
 	// get the runbook sha from the tree

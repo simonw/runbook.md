@@ -180,7 +180,7 @@ const command = async context => {
 	};
 
 	const statusDetails = {
-		target_url: `${process.env.BIZ_OPS_URL}/status/${commitSha}`,
+		target_url: `${process.env.BIZ_OPS_URL}/runbook.md/status/${commitSha}`,
 		...{
 			success: {
 				description: 'Validation passed',

@@ -78,7 +78,7 @@ functions:
         timeout: 30
         events:
             - http:
-                  path: /status/{owner}/{repo}/{hash}
+                  path: /runbook.md/status/{owner}/{repo}/{hash}
                   method: get
     githubWebhook:
         description: GitHub webhook responder

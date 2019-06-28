@@ -65,7 +65,11 @@ describe('webhook', () => {
 
 			it('bails if there is no runbook in the head commit tree', () => {
 				ctx.github.git.getTree.mockResolvedValue({
-					tree: [{ path: 'runbook.md.this.is.not', type: 'blob' }],
+					data: {
+						tree: [
+							{ path: 'runbook.md.this.is.not', type: 'blob' },
+						],
+					},
 				});
 				expect(webhook.command(ctx)).rejects.toThrow(
 					'No runbook in tree',
@@ -76,10 +80,14 @@ describe('webhook', () => {
 		describe('processing events', () => {
 			beforeEach(() => {
 				ctx.github.git.getTree.mockResolvedValue({
-					tree: [{ path: 'runbook.md', type: 'blob', sha: hash }],
+					data: {
+						tree: [{ path: 'runbook.md', type: 'blob', sha: hash }],
+					},
 				});
 				ctx.github.git.getBlob.mockResolvedValue({
-					content: base64EncodedRunbook,
+					data: {
+						content: base64EncodedRunbook,
+					},
 				});
 			});
 

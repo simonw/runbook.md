@@ -49,18 +49,13 @@ const command = async context => {
 	// get the git tree of the head commit
 	// https://octokit.github.io/rest.js/#octokit-routes-git-get-tree
 
-	const treePayload = await context.github.git.getTree({
+	const {
+		data: { tree },
+	} = await context.github.git.getTree({
 		owner,
 		repo,
 		tree_sha: treeId,
 		recursive: 1,
-	});
-	const { tree } = treePayload;
-	logger.info({
-		event: 'WEBHOOK_GET_TREE',
-		treePayload,
-		tree,
-		commitSha,
 	});
 
 	// get the runbook sha from the tree
@@ -84,7 +79,9 @@ const command = async context => {
 
 	// get the runbook blob
 	// https://octokit.github.io/rest.js/#octokit-routes-git-get-blob
-	const { content: base64EncodedRunbook } = await context.github.git.getBlob({
+	const {
+		data: { content: base64EncodedRunbook },
+	} = await context.github.git.getBlob({
 		owner,
 		repo,
 		file_sha: runbookSha,

@@ -12,4 +12,12 @@ module.exports = {
 		// as this is translated to `eslint-config-@financial-times/rel-engage/packages/dotfiles/eslint
 		'./node_modules/@financial-times/rel-engage/packages/dotfiles/eslint.js',
 	],
+	overrides: [
+		{
+			files: ['**/*.test.js'],
+			env: {
+				jest: true,
+			},
+		},
+	],
 };

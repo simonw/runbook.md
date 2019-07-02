@@ -1,4 +1,4 @@
-const runbookMd = require('@financial-times/runbook.md-parser');
+const runbookMd = require('../../../../libraries/parser');
 const schema = require('../lib/get-configured-schema');
 
 module.exports = runbookMd(schema);

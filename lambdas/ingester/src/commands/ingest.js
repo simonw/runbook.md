@@ -2,6 +2,38 @@ const runbookMd = require('../lib/parser');
 const { validate, updateBizOps } = require('../lib/external-apis');
 const { validateCodesAgainstBizOps } = require('../lib/code-validation');
 
+const outOfScopeProperties = [
+	'code',
+	'piiSources',
+	'SF_ID',
+	'repositories',
+	'recursiveDependencies',
+	'stakeholders',
+	'dependents',
+	'recursiveDependents',
+	'dependentProducts',
+	'dependentCapabilities',
+	'recursiveDependentProducts',
+	'replacedBy',
+	'lastServiceReviewDate',
+	'sosTrafficLight',
+	'lastSOSReport',
+	'updatesData',
+];
+
+const checkScopeOfProperties = data => {
+	const errors = [];
+	Object.entries(data).forEach(([property]) => {
+		if (outOfScopeProperties.includes(property)) {
+			errors.push({
+				message: `${property} is not permitted in runbook.md`,
+			});
+			delete data[property];
+		}
+	});
+	return errors;
+};
+
 const transformIngestedDetails = (
 	parseResult,
 	validationResult,
@@ -32,16 +64,21 @@ const ingest = async (username, payload) => {
 	// parse RUNBOOK.MD to JSON
 	const parseResult = await runbookMd.parseRunbookString(content);
 
+	// check that only expected properties have been provided
+	const scopeErrors = checkScopeOfProperties(parseResult.data);
+
 	// validate JSON against the System properties
 	// in biz-ops schema
 	const checkResult = await validateCodesAgainstBizOps(
 		username,
 		parseResult.data,
 	);
+
 	const parseCheckResult = { ...parseResult, ...checkResult };
 	parseCheckResult.errors = [
 		...(parseResult.errors || []),
 		...(checkResult.errors || []),
+		...(scopeErrors || []),
 	];
 
 	if (parseCheckResult.errors.length) {

@@ -72,4 +72,4 @@ run: clean
 	@concurrently "make build-statics" "make serverless-offline"
 
 move-asset-manifest:
-	[ -f "./dist/browser/manifest.json" ] && mv "./dist/browser/manifest.json" ./src/assets/
+	[ -f "./dist/browser/manifest.json" ] && mv "./dist/browser/manifest.json" ./lambdas/ingester/src/assets/

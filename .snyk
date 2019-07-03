@@ -1,0 +1,19 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.13.3
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-JS-LODASH-450202:
+    - lodash:
+        reason: No fix
+        expires: '2019-08-02T09:42:01.377Z'
+    - '@financial-times/biz-ops-schema > lodash':
+        reason: No fix
+        expires: '2019-08-02T09:42:01.377Z'
+    - probot > hbs > handlebars > async > lodash:
+        reason: No fix
+        expires: '2019-08-02T09:42:01.377Z'
+  SNYK-JS-MARKED-451341:
+    - marked:
+        reason: No fix
+        expires: '2019-08-02T09:42:01.377Z'
+patch: {}

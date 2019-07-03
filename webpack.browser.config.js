@@ -7,7 +7,7 @@ const path = require('path');
 
 const filenameTemplate = process.env.CI ? '[contenthash].[name]' : '[name]';
 module.exports = {
-	entry: ['./src/browser/main.js'],
+	entry: ['./lambdas/ingester/src/browser/main.js'],
 	resolve: {
 		extensions: ['.js', '.jsx'],
 	},

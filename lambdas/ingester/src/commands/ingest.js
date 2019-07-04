@@ -1,34 +1,23 @@
 const runbookMd = require('../lib/parser');
 const { validate, updateBizOps } = require('../lib/external-apis');
 const { validateCodesAgainstBizOps } = require('../lib/code-validation');
-
-const outOfScopeProperties = [
-	'code',
-	'piiSources',
-	'SF_ID',
-	'repositories',
-	'recursiveDependencies',
-	'stakeholders',
-	'dependents',
-	'recursiveDependents',
-	'dependentProducts',
-	'dependentCapabilities',
-	'recursiveDependentProducts',
-	'replacedBy',
-	'lastServiceReviewDate',
-	'sosTrafficLight',
-	'lastSOSReport',
-	'updatesData',
-];
+const { excluded, essential } = require('../schema/property-scope');
 
 const checkScopeOfProperties = data => {
 	const errors = [];
 	Object.entries(data).forEach(([property]) => {
-		if (outOfScopeProperties.includes(property)) {
+		if (excluded.includes(property)) {
 			errors.push({
 				message: `${property} is not permitted in runbook.md`,
 			});
 			delete data[property];
+		}
+	});
+	essential.forEach(property => {
+		if (!data[property]) {
+			errors.push({
+				message: `${property} MUST be provided in runbook.md`,
+			});
 		}
 	});
 	return errors;

@@ -1,13 +1,31 @@
 const visit = require('unist-util-visit-parents');
 const convertNodeToProblem = require('./convert-node-to-problem');
-const excluded = require('../../../../schema/excluded-properties');
+
+const excludedProperties = [
+	'code',
+	'dependentCapabilities',
+	'dependentProducts',
+	'dependents',
+	'lastServiceReviewDate',
+	'lastSOSReport',
+	'piiSources',
+	'recursiveDependencies',
+	'recursiveDependentProducts',
+	'recursiveDependents',
+	'replacedBy',
+	'repositories',
+	'SF_ID',
+	'sosTrafficLight',
+	'stakeholders',
+	'updatesData',
+];
 
 module.exports = function coerceBizopsPropertiesToType({ validateProperty }) {
 	function mutate(node) {
-		if (excluded.includes(node.key)) {
+		if (excludedProperties.includes(node.key)) {
 			return convertNodeToProblem({
 				node,
-				message: `${node.key} is not permitted within runbook.md`,
+				message: `${node.key} is not permitted within runbook.md (to allow other people to edit it)`,
 			});
 		}
 		try {

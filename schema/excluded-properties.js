@@ -1,0 +1,18 @@
+module.exports = [
+	'code',
+	'dependentCapabilities',
+	'dependentProducts',
+	'dependents',
+	'lastServiceReviewDate',
+	'lastSOSReport',
+	'piiSources',
+	'recursiveDependencies',
+	'recursiveDependentProducts',
+	'recursiveDependents',
+	'replacedBy',
+	'repositories',
+	'SF_ID',
+	'sosTrafficLight',
+	'stakeholders',
+	'updatesData',
+];

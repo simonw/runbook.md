@@ -1,7 +1,7 @@
 const runbookMd = require('../lib/parser');
 const { validate, updateBizOps } = require('../lib/external-apis');
 const { validateCodesAgainstBizOps } = require('../lib/code-validation');
-const { excluded, essential } = require('../schema/property-scope');
+const excluded = require('../../../../schema/excluded-properties');
 
 const checkScopeOfProperties = data => {
 	const errors = [];
@@ -11,13 +11,6 @@ const checkScopeOfProperties = data => {
 				message: `${property} is not permitted in runbook.md`,
 			});
 			delete data[property];
-		}
-	});
-	essential.forEach(property => {
-		if (!data[property]) {
-			errors.push({
-				message: `${property} MUST be provided in runbook.md`,
-			});
 		}
 	});
 	return errors;

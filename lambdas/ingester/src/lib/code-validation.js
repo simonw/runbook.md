@@ -1,6 +1,32 @@
 const schema = require('./get-configured-schema');
 const { queryBizOps } = require('./external-apis');
 
+const relatedBizOpsFields = {
+	Group: ['name', 'isActive'].join(),
+	Healthcheck: ['url', 'isLive'].join(),
+	Person: ['name', 'email', 'phone', 'isActive'].join(),
+	Repository: ['url', 'isArchived'].join(),
+	System: ['name', 'serviceTier', 'lifecycleStage'].join(),
+	Team: [
+		'name',
+		'email',
+		'slack',
+		'phone',
+		'supportRota',
+		'contactPref',
+		'isActive',
+		`productOwners{${[
+			'code',
+			'name',
+			'email',
+			'phone',
+			'isActive',
+		].join()}}`,
+		`techLeads{${['code', 'name', 'email', 'phone', 'isActive'].join()}}`,
+		`group{${['code', 'name', 'isActive'].join()}}`,
+	].join(),
+};
+
 const pushUnique = (accumulator, valuesToAdd) => {
 	valuesToAdd.forEach(valueToAdd => {
 		if (
@@ -27,14 +53,21 @@ const getTypesAndCodesFromRelationships = (systemSchema, data) =>
 		return accumulator;
 	}, []);
 
+const sanitisedKey = (type, code) =>
+	`${type}_${code.replace(/[-,]/g, '_').replace(/\W/g, '')}`;
+
 const buildGraphQLQuery = bizOpsCodes => {
 	const propertyMappings = {};
 	const query = `query getStuff {
 		${bizOpsCodes
 			.map(({ type, code }) => {
-				const sanitizedCode = code.replace('-', '').replace(/\W/g, '');
-				propertyMappings[`${type}_${sanitizedCode}`] = { type, code };
-				return `${type}_${sanitizedCode}:${type} (code:"${code}") {code}`;
+				propertyMappings[sanitisedKey(type, code)] = { type, code };
+				return `${sanitisedKey(
+					type,
+					code,
+				)}:${type} (code:"${code}") {code ${
+					relatedBizOpsFields[type]
+				}}`;
 			})
 			.join('\n')}
 		}`;
@@ -51,23 +84,39 @@ const formatBizOpsResponse = (bizOpsResponse, propertyMappings) => {
 				message: `There is no ${type} with a code of ${code} stored within Biz Ops`,
 			});
 		} else {
-			bizOpsData[key] = {
-				code,
-				value,
-			};
+			bizOpsData[key] = value;
 		}
 	});
 	return { bizOpsData, errors };
 };
 
-const validateCodesAgainstBizOps = async (username, data) => {
+const replaceCodesWithData = (systemSchema, data, bizOpsData) => {
+	const expandedData = {};
+	Object.entries(data).forEach(([property, value]) => {
+		const { type, isRelationship } = systemSchema.properties[property];
+		if (isRelationship) {
+			if (typeof value === 'string') {
+				expandedData[property] = bizOpsData[sanitisedKey(type, value)];
+			} else {
+				expandedData[property] = value.map(
+					code => bizOpsData[sanitisedKey(type, code)],
+				);
+			}
+		} else {
+			expandedData[property] = value;
+		}
+	});
+	return expandedData;
+};
+
+const transformCodesIntoNestedData = async (username, data) => {
 	const systemSchema = schema.getTypes().find(type => type.name === 'System');
 	const uniqueBizOpsCodes = getTypesAndCodesFromRelationships(
 		systemSchema,
 		data,
 	);
 	if (!uniqueBizOpsCodes.length) {
-		return { bizOpsData: {}, errors: [] };
+		return { expandedData: {}, errors: [] };
 	}
 	const { query, propertyMappings } = buildGraphQLQuery(uniqueBizOpsCodes);
 	const { json: bizOpsResponse } = await queryBizOps(
@@ -75,9 +124,19 @@ const validateCodesAgainstBizOps = async (username, data) => {
 		process.env.BIZ_OPS_API_KEY,
 		query,
 	);
-	return formatBizOpsResponse(bizOpsResponse, propertyMappings);
+	const { bizOpsData, errors } = formatBizOpsResponse(
+		bizOpsResponse,
+		propertyMappings,
+	);
+	if (errors.length) {
+		return { expandedData: {}, errors };
+	}
+	return {
+		expandedData: replaceCodesWithData(systemSchema, data, bizOpsData),
+		errors: [],
+	};
 };
 
 module.exports = {
-	validateCodesAgainstBizOps,
+	transformCodesIntoNestedData,
 };

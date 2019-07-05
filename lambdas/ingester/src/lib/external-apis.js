@@ -33,8 +33,6 @@ const callExternalApi = async ({
 	return { status: fetchResponse.status, json: await fetchResponse.json() };
 };
 
-const nestedFields = ['deliveryTeam', 'supportTeam'];
-
 const validate = async request =>
 	callExternalApi({
 		name: 'SOS validate',
@@ -42,10 +40,18 @@ const validate = async request =>
 		url: `${process.env.SOS_URL}/api/v1/validate`,
 		payload: request,
 	}).then(({ status, json }) => {
-		// HACK - prevents showing errors for related fields
-		nestedFields.forEach(name => {
-			delete json.errorMessages[name];
-		});
+		// Remove any errors which are not directly attributable to the System properties
+		Object.entries(json.errorProperties).forEach(
+			([name, errorProperties]) => {
+				if (
+					errorProperties.filter(
+						({ key }) => key.slice(0, 7) === 'System/',
+					).length === 0
+				) {
+					delete json.errorMessages[name];
+				}
+			},
+		);
 		return { status, json };
 	});
 

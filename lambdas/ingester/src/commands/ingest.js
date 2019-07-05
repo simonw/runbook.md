@@ -1,6 +1,6 @@
 const runbookMd = require('../lib/parser');
 const { validate, updateBizOps } = require('../lib/external-apis');
-const { validateCodesAgainstBizOps } = require('../lib/code-validation');
+const { transformCodesIntoNestedData } = require('../lib/code-validation');
 
 const transformIngestedDetails = (
 	parseResult,
@@ -29,31 +29,26 @@ const ingest = async (username, payload) => {
 	if (!content) {
 		throw decorateError({ message: 'Please supply RUNBOOK.md content' });
 	}
-	// parse RUNBOOK.MD to JSON
+	// parse RUNBOOK.MD to JSON to return {data, errors}
 	const parseResult = await runbookMd.parseRunbookString(content);
-
-	// validate JSON against the System properties
-	// in biz-ops schema
-	const checkResult = await validateCodesAgainstBizOps(
+	// validate codes in JSON against the Biz Ops to return {expandedData, errors}
+	const expandedResult = await transformCodesIntoNestedData(
 		username,
 		parseResult.data,
 	);
 
-	const parseCheckResult = { ...parseResult, ...checkResult };
-	parseCheckResult.errors = [
-		...(parseResult.errors || []),
-		...(checkResult.errors || []),
-	];
-
-	if (parseCheckResult.errors.length) {
+	parseResult.errors.push(...expandedResult.errors);
+	if (parseResult.errors.length) {
 		throw decorateError({
 			message: 'Parse Failures. Please correct and resubmit',
-			details: transformIngestedDetails(parseCheckResult),
+			details: transformIngestedDetails(parseResult),
 		});
 	}
 
 	// validate against SOS ruleset
-	const { json: validationResult } = await validate(parseResult.data);
+	const { json: validationResult } = await validate(
+		expandedResult.expandedData,
+	);
 
 	const details = transformIngestedDetails(parseResult, validationResult);
 
@@ -75,7 +70,7 @@ const ingest = async (username, payload) => {
 
 	if (!bizOpsApiKey) {
 		throw decorateError({
-			message: 'Please supply a Biz-Ops API keyyy',
+			message: 'Please supply a Biz-Ops API key',
 			details,
 		});
 	}

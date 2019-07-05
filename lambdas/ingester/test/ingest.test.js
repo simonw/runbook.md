@@ -38,9 +38,9 @@ describe('ingest command', () => {
 		spies.updateBizOps = jest
 			.spyOn(externalApis, 'updateBizOps')
 			.mockResolvedValue({ status: 200 });
-		spies.validateCodesAgainstBizOps = jest
-			.spyOn(bizOpsValidation, 'validateCodesAgainstBizOps')
-			.mockResolvedValue({});
+		spies.transformCodesIntoNestedData = jest
+			.spyOn(bizOpsValidation, 'transformCodesIntoNestedData')
+			.mockResolvedValue({ expandedData: {}, errors: [] });
 	});
 
 	afterEach(() => {
@@ -52,7 +52,7 @@ describe('ingest command', () => {
 			const { result, parseData } = await runIngest({
 				writeToBizOps: true,
 			});
-			expect(spies.validateCodesAgainstBizOps).toHaveBeenCalled();
+			expect(spies.transformCodesIntoNestedData).toHaveBeenCalled();
 			expect(spies.validate).toHaveBeenCalled();
 			expect(spies.updateBizOps).toHaveBeenCalled();
 			expect(result).toMatchObject({

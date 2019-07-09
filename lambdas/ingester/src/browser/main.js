@@ -84,7 +84,10 @@ const initDiagram = () => {
 	drawDiagram(document, 'flow', graphvizParams);
 };
 
-initDiagram();
+// eslint-disable-next-line no-undef
+const flow = document.querySelector('#flow');
+if (flow) initDiagram();
+
 const formHandler = require('./components/manualEntryForm');
 
 // eslint-disable-next-line no-undef

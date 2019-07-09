@@ -56,7 +56,7 @@ const Header = () => {
 							<a href="/runbook.md">Parse, Validation & Import</a>
 						</li>
 						<li>
-							<a href="/about">About</a>
+							<a href="/runbook.md/about">About</a>
 						</li>
 					</ul>
 				</nav>

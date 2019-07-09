@@ -66,6 +66,15 @@ custom:
         keepOutputDirectory: true
 
 functions:
+    about:
+        description: About page for teh SOS project
+        handler: lambdas/ingester/src/aboutPageHandler.handler
+        timeout: 10
+        memorySize: 512
+        events:
+            - http:
+                path: /about
+                method: get
     form:
         description: GUI for driving ingestion of a runbook.md
         handler: lambdas/ingester/src/formHandler.handler

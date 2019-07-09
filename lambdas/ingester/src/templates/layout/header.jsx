@@ -47,6 +47,19 @@ const Header = () => {
 						<span className="o-header-services__primary-nav" />
 					</div>
 				</div>
+				<nav
+					className="o-header-services__primary-nav"
+					aria-label="primary"
+				>
+					<ul className="o-header-services__primary-nav-list">
+						<li>
+							<a href="/runbook.md">Parse, Validation & Import</a>
+						</li>
+						<li>
+							<a href="/about">About</a>
+						</li>
+					</ul>
+				</nav>
 			</header>
 		</div>
 	);

@@ -71,7 +71,6 @@ build-statics:
 		else make build-production-assets; \
 	fi
 
-
 run-local-message-stream:
 	@if [ "$$IS_RUNNING" != true ]; then \
 		docker run -d --name localstreams -p 4567:4567 instructure/kinesalite; \

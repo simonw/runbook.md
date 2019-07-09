@@ -4,6 +4,7 @@ const { queryBizOps } = require('./external-apis');
 const relatedBizOpsFields = {
 	Group: ['name', 'isActive'].join(),
 	Healthcheck: ['url', 'isLive'].join(),
+	Package: ['name'],
 	Person: ['name', 'email', 'phone', 'isActive'].join(),
 	Repository: ['url', 'isArchived'].join(),
 	System: ['name', 'serviceTier', 'lifecycleStage'].join(),
@@ -65,9 +66,8 @@ const buildGraphQLQuery = bizOpsCodes => {
 				return `${sanitisedKey(
 					type,
 					code,
-				)}:${type} (code:"${code}") {code ${
-					relatedBizOpsFields[type]
-				}}`;
+				)}:${type} (code:"${code}") {code ${relatedBizOpsFields[type] ||
+					''}}`;
 			})
 			.join('\n')}
 		}`;

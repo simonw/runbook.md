@@ -3,6 +3,10 @@
 		"name": "runbooks.md",
 		"version": "1.0.0",
 		"description": "Automated import of runbook.md",
+		"engines": {
+			"node": ">= 10.16.0",
+			"npm": ">= 5.6.0"
+		},
 		"main": "index.js",
 		"repository": {
 				"type": "git",
@@ -49,7 +53,7 @@
 				"@babel/plugin-transform-react-jsx": "^7.3.0",
 				"@babel/preset-env": "^7.4.5",
 				"@babel/preset-react": "^7.0.0",
-				"@financial-times/rel-engage": "^7.1.1",
+				"@financial-times/rel-engage": "^7.1.2",
 				"@types/jest": "^24.0.15",
 				"acorn": "^6.1.1",
 				"babel-loader": "^8.0.6",

@@ -2,26 +2,24 @@ const { h } = require('hyperons');
 const addLineNumbers = require('add-line-numbers');
 const { Table } = require('./table');
 
-exports.Message = ({ status, message, linkText, linkUrl }) => (
+exports.Message = ({ alertState, message, linkText, linkUrl }) => (
 	<div
-		className={`o-message with-margin-bottom o-message--alert ${
-			status === 200 || status === 'success'
-				? 'o-message--success'
-				: 'o-message--error'
-		}`}
+		className={`o-message with-margin-bottom o-message--alert o-message--${alertState}`}
 		data-o-component="o-message"
 	>
 		<div className="o-message__container">
-			<div className="o-message__content ">
+			<div className="o-message__content">
 				<p className="o-message__content-main">{message}</p>
-				<div className="o-message__actions">
-					<a
-						href={`${linkUrl}`}
-						className="o-message__actions__secondary"
-					>
-						{linkText}
-					</a>
-				</div>
+				{linkUrl && linkText && (
+					<div className="o-message__actions">
+						<a
+							href={`${linkUrl}`}
+							className="o-message__actions__secondary"
+						>
+							{linkText}
+						</a>
+					</div>
+				)}
 			</div>
 		</div>
 	</div>

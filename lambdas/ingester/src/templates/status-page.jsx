@@ -8,7 +8,7 @@ const StatusPage = ({
 	owner,
 	repo,
 	hash,
-	status,
+	alertState,
 	message,
 	commitUrl,
 	runbookUrl,
@@ -35,7 +35,7 @@ const StatusPage = ({
 				</span>
 			</p>
 			<ValidationResult
-				status={status}
+				alertState={alertState}
 				message={message}
 				parseData={parseData}
 				parseErrors={parseErrors}

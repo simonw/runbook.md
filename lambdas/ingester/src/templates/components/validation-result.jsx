@@ -12,6 +12,7 @@ const { BIZ_OPS_URL } = process.env;
 
 exports.ValidationResult = ({
 	status,
+	alertState,
 	writeToBizOps,
 	systemCode,
 	message,
@@ -35,7 +36,7 @@ exports.ValidationResult = ({
 			<div data-o-grid-colspan="12">
 				{message && message.length > 0 && (
 					<Message
-						status={status}
+						alertState={alertState}
 						message={message}
 						linkText={
 							status === 200 &&

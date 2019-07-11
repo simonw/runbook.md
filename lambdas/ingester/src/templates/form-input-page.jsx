@@ -34,6 +34,7 @@ const ValidateForm = ({
 			{readOnly && (
 				<ValidationResult
 					refreshLink
+					alertState={status === 200 ? 'success' : 'error'}
 					status={status}
 					systemCode={systemCode}
 					message={message}

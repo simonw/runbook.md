@@ -128,7 +128,7 @@ const command = async context => {
 		}
 	};
 
-	const ingestResult = { status: 'success' };
+	const ingestResult = { status: 'success', content };
 
 	try {
 		logger.info({

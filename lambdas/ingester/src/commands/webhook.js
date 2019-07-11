@@ -184,10 +184,14 @@ const command = async context => {
 		target_url: `${bizOpsUrl}/runbook.md/status/${owner}/${repo}/${commitSha}`,
 		...{
 			success: {
-				description: 'Validation passed',
+				description: ingestResult.details
+					? `Runbook score: ${(
+							ingestResult.details.weightedScore || 0
+					  ).toFixed(1)}%`
+					: 'Runbook is valid',
 			},
 			failure: {
-				description: 'Runbook contains errors',
+				description: 'Runbook parse failed',
 			},
 		}[ingestResult.status],
 	};

@@ -26,9 +26,6 @@ install:
 PROJECT_NAME=biz-ops-runbook-md
 PRODUCT_NAME=biz-ops
 
-IS_RUNNING=$(shell docker inspect --format '{{.State.Running}}' localstreams)
-STREAM_EXIST=$(shell aws --no-verify-ssl --endpoint-url=http://localhost:4567 kinesis list-streams | grep change-request-api-test-enriched-stream)
-
 test:
 ifneq ($(CI),)
 	jest
@@ -71,11 +68,17 @@ build-statics:
 		else make build-production-assets; \
 	fi
 
+check-stream-container-is-running:
+	docker inspect --format '{{.State.Running}}' localstreams
+
+check-stream-exists:
+	aws --no-verify-ssl --endpoint-url=http://localhost:4567 kinesis list-streams | grep -q change-request-api-test-enriched-stream
+
 run-local-message-stream:
-	@if [ "$$IS_RUNNING" != true ]; then \
+	@if ! make check-stream-container-is-running; then \
 		docker run -d --name localstreams -p 4567:4567 instructure/kinesalite; \
 	fi
-	if [ ! -n "$$STREAM_EXIST" ] ; then \
+	if ! make check-stream-exists; then \
 		aws --no-verify-ssl --endpoint-url=http://localhost:4567 kinesis \
 			create-stream --stream-name change-request-api-test-enriched-stream --shard-count 1; \
 	fi

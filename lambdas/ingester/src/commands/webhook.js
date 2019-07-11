@@ -3,6 +3,7 @@ const { ingest } = require('./ingest');
 const { put: storeResult } = require('../lib/dynamodb-client');
 
 const clientUserId = process.env.BIZ_OPS_CLIENT_USER_ID;
+const bizOpsUrl = process.env.BIZ_OPS_URL;
 
 const base64Decode = data => {
 	const buff = Buffer.from(data, 'base64');
@@ -80,7 +81,7 @@ const command = async context => {
 	// get the runbook blob
 	// https://octokit.github.io/rest.js/#octokit-routes-git-get-blob
 	const {
-		data: { content: base64EncodedRunbook },
+		data: { content: base64EncodedRunbook, url: runbookUrl },
 	} = await context.github.git.getBlob({
 		owner,
 		repo,
@@ -128,7 +129,7 @@ const command = async context => {
 		}
 	};
 
-	const ingestResult = { status: 'success', content };
+	const ingestResult = { status: 'success', content, runbookUrl };
 
 	try {
 		logger.info({
@@ -180,7 +181,7 @@ const command = async context => {
 	};
 
 	const statusDetails = {
-		target_url: `${process.env.BIZ_OPS_URL}/runbook.md/status/${owner}/${repo}/${commitSha}`,
+		target_url: `${bizOpsUrl}/runbook.md/status/${owner}/${repo}/${commitSha}`,
 		...{
 			success: {
 				description: 'Validation passed',

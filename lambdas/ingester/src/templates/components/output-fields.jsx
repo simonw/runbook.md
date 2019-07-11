@@ -1,10 +1,13 @@
 const { h } = require('hyperons');
+const addLineNumbers = require('add-line-numbers');
 const { Table } = require('./table');
 
 exports.Message = ({ status, message, linkText, linkUrl }) => (
 	<div
 		className={`o-message with-margin-bottom o-message--alert ${
-			status === 200 ? 'o-message--success' : 'o-message--error'
+			status === 200 || status === 'success'
+				? 'o-message--success'
+				: 'o-message--error'
 		}`}
 		data-o-component="o-message"
 	>
@@ -80,6 +83,40 @@ exports.ValidationErrors = ({ errors }) => {
 	return (
 		<div className="validation-errors">
 			<Table {...tableProps} />
+		</div>
+	);
+};
+
+exports.RunbookOutput = ({ content, runbookUrl }) => {
+	const id = 'runbookContent';
+
+	return (
+		<div className="o-forms-field" aria-labelledby={`${id}-info`}>
+			<span className="o-forms-title" aria-hidden="true">
+				<span className="o-forms-title__prompt" id={`${id}-info`}>
+					<a
+						href={runbookUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						View on github &raquo;
+					</a>
+				</span>
+			</span>
+			<span className="o-forms-input o-forms-input--textarea runbook-form__markdown-input">
+				{' '}
+				<textarea
+					className="o-forms__textarea"
+					name="content"
+					id="content"
+					rows="20"
+					placeholder={content}
+					data-original-content={content}
+					readOnly
+				>
+					{addLineNumbers(content)}
+				</textarea>
+			</span>
 		</div>
 	);
 };

@@ -20,15 +20,34 @@ const statusPageHandler = async event => {
 			hash,
 		});
 
+		const { content, details, runbookUrl } = storedResult;
+		let { status } = storedResult;
+		const commitUrl = `https://github.com/${owner}/${repo}/commit/${hash}`;
+
+		let message = 'RUNBOOK.MD passed validation';
+		if (
+			status === 'success' &&
+			Object.keys(details.validationErrors).length
+		) {
+			status = 'failure';
+		}
+		if (status === 'failure') {
+			message = 'We encountered errors while validating RUNBOOK.MD';
+		}
+
 		return renderPage(
 			template,
 			{
 				layout: 'docs',
-				status: 200,
-				message: storedResult.message,
-				readOnly: true,
+				status,
+				message,
+				owner,
+				repo,
 				hash,
-				...storedResult.details,
+				commitUrl,
+				runbookUrl,
+				content,
+				...details,
 			},
 			event,
 		);

@@ -58,6 +58,10 @@ custom:
         region: ${self:provider.region}
         skipCacheInvalidation: false
 
+    prune:
+        automatic: true
+        number: 3
+
     webpack:
         webpackConfig: 'webpack.server.config.js'
         includeModules: true
@@ -120,6 +124,7 @@ plugins:
     - serverless-webpack
     - serverless-offline-kinesis
     - serverless-offline
+    - serverless-prune-plugin
 
 package:
     exclude:

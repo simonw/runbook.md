@@ -69,7 +69,7 @@ build-statics:
 	fi
 
 check-stream-container-is-running:
-	docker inspect --format '{{.State.Running}}' localstreams
+	$(shell docker inspect --format '{{.State.Running}}' localstreams) = true
 
 check-stream-exists:
 	aws --no-verify-ssl --endpoint-url=http://localhost:4567 kinesis list-streams | grep -q change-request-api-test-enriched-stream
